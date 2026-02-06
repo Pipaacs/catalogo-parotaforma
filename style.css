@@ -424,3 +424,24 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: 0.5px; }
 
 
 /* https://github.com/Pipaacs/catalogo-parotaforma.git */
+
+
+.btn-ml {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: #FFF159; /* Amarillo Mercado Libre */
+    color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: background 0.3s;
+    border: 1px solid #e6d800;
+}
+
+.btn-ml:hover {
+    background-color: #f7e600;
+    color: #000;
+}

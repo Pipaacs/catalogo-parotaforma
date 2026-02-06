@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- APARTADO SILLAS ---
         "silla-grecia": {
             title: "Silla Grecia Tejida",
+            mlLink: "https://articulo.mercadolibre.com.mx/MLM-tu-publicacion-aqui",
             price: "$4,500 MXN",
             desc: "Silla artesanal que combina la robustez de la parota con la frescura del tejido natural. Perfecta para climas cálidos y comedores relajados.",
             finish: "Aceite de linaza natural (acabado poro abierto).",
@@ -420,6 +421,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             } else if (variantContainer) {
                 variantContainer.style.display = 'none';
+                // --- LÓGICA DEL BOTÓN MERCADO LIBRE ---
+const mlBtn = document.getElementById('ml-link');
+
+if (mlBtn) {
+    if (product.mlLink) {
+        mlBtn.href = product.mlLink;
+        mlBtn.style.display = 'block'; // Lo mostramos si hay link
+    } else {
+        mlBtn.style.display = 'none'; // Lo ocultamos si no tiene link de ML
+    }
+}
             }
             
             // Ficha técnica segura
