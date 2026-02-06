@@ -97,20 +97,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- APARTADO SILLAS ---
         "silla-grecia": {
-            title: "Silla Grecia Tejida",
-            mlLink: "https://articulo.mercadolibre.com.mx/MLM-tu-publicacion-aqui",
+            title: "Silla Grecia",
+            mlLink: "https://articulo.mercadolibre.com.mx/MLM-2576780809-silla-grecia-parota-forma-1-unidad-diseno-moderno-_JM",
             price: "$4,500 MXN",
             desc: "Silla artesanal que combina la robustez de la parota con la frescura del tejido natural. Perfecta para climas cálidos y comedores relajados.",
             finish: "Aceite de linaza natural (acabado poro abierto).",
             material: "Estructura de Parota sólida y tejido de palma real.",
             maintenance: "Hidratar la madera cada 6 meses con aceite.",
             images: [
-                "img/sillas/grecia1.png",
-                "img/sillas/grecia2.png",
-                "img/sillas/grecia3.png",
-                "img/sillas/grecia4.png"
+                "img/sillas/grecia/grecia1.png",
+                "img/sillas/grecia/grecia2.png",
+                "img/sillas/grecia/grecia3.png",
+                "img/sillas/grecia/grecia4.png"
             ],
-            sizes: ["Estándar (Alto 85cm)", "Juego de 4 Sillas", "Juego de 8 Sillas"],
+            sizes: ["Estándar (Alto 80cm x Largo 57cm x Ancho 59cm)",],
             category: "Sillas",
             categoryLink: "sillas.html",
         
@@ -123,18 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
             finish: "Poliuretano Mate grado automotriz (3 capas).",
             material: "Parota sólida y tela tejida de alta calidad.",
             maintenance: "Limpiar con paño húmedo. No usar químicos abrasivos.",
-            images: ["img/sillas/luna3.png", "img/sillas/luna4.png", "img/sillas/luna1.png", "img/sillas/luna2.png"],
-            sizes: ["Estandar comedor"],
+            images: ["img/sillas/luna/luna3.png", "img/sillas/luna/luna4.png", "img/sillas/luna/luna1.png", "img/sillas/luna/luna2.png"],
+            sizes: ["(Alto 77cm x Largo 56cm x Ancho 53cm)"],
             category: "Sillas",
             categoryLink: "sillas.html",
-            variants: {
-            name: "Color de Tapiz", // El título del menú
-            options: ["Gris Oxford", "Beige Arena", "Negro Profundo", "Terracota"]
-        },  variantImages: {
-                "Gris Oxford": "img/sillas/silla-tulum-gris.jpg",   // Tu foto de la silla gris
-                "Beige Arena": "img/sillas/silla-tulum-beige.jpg",  // Tu foto de la silla beige
-                "Negro Profundo": "img/sillas/silla-tulum-negra.jpg" // Tu foto de la silla negra
-            },
+            
         },
 
         "silla-francia": {
@@ -144,8 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
             finish: "Poliuretano Mate grado automotriz (3 capas).",
             material: "Parota sólida y tela tejida de alta calidad.",
             maintenance: "Limpiar con paño húmedo. No usar químicos abrasivos.",
-            images: ["img/sillas/francia1.png", "img/sillas/francia2.png", "img/sillas/francia3.png", "img/sillas/francia4.png"],
-            sizes: ["Estandar comedor"],
+            images: ["img/sillas/francia/francia1.png", "img/sillas/francia/francia2.png", "img/sillas/francia/francia3.png", "img/sillas/francia/francia4.png"],
+            sizes: ["(Alto 79cm x Largo 50cm x Ancho 61cm)"],
             category: "Sillas",
             categoryLink: "sillas.html",
         },
@@ -157,8 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
             finish: "Poliuretano Mate grado automotriz (3 capas).",
             material: "Parota sólida y tela tejida de alta calidad.",
             maintenance: "Limpiar con paño húmedo. No usar químicos abrasivos.",
-            images: ["img/sillas/merlin1.png", "img/sillas/merlin2.png", "img/sillas/merlin3.png", "img/sillas/merlin4.png"],
-            sizes: ["Estandar comedor"],
+            images: ["img/sillas/merlin/merlin1.png", "img/sillas/merlin/merlin2.png", "img/sillas/merlin/merlin3.png", "img/sillas/merlin/merlin4.png"],
+            sizes: ["(Alto 84cm x Largo 57cm x Ancho 50cm)"],
             category: "Sillas",
             categoryLink: "sillas.html",
         },
@@ -170,8 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
             finish: "Poliuretano Mate grado automotriz (3 capas).",
             material: "Parota sólida y tela tejida de alta calidad.",
             maintenance: "Limpiar con paño húmedo. No usar químicos abrasivos.",
-            images: ["img/sillas/paris1.png", "img/sillas/paris2.png", "img/sillas/paris3.png", "img/sillas/paris4.png"],
-            sizes: ["Estandar comedor"],
+            images: ["img/sillas/paris/paris1.png", "img/sillas/paris/paris2.png", "img/sillas/paris/paris3.png", "img/sillas/paris/paris4.png"],
+            sizes: ["(Alto 85cm x Largo 56cm x Ancho 51cm)"],
             category: "Sillas",
             categoryLink: "sillas.html",
         },
@@ -183,8 +176,36 @@ document.addEventListener('DOMContentLoaded', () => {
             finish: "Poliuretano Mate grado automotriz (3 capas).",
             material: "Parota sólida y tela tejida de alta calidad.",
             maintenance: "Limpiar con paño húmedo. No usar químicos abrasivos.",
-            images: ["img/sillas/zeta1.png", "img/sillas/zeta2.png", "img/sillas/zeta3.png", "img/sillas/zeta4.png"],
-            sizes: ["Estandar comedor"],
+            images: ["img/sillas/zeta/zeta1.png", "img/sillas/zeta/zeta2.png", "img/sillas/zeta/zeta3.png", "img/sillas/zeta/zeta4.png"],
+            sizes: ["(Alto 105cm x Largo 44cm x Ancho 48cm)"],
+            category: "Sillas",
+            categoryLink: "sillas.html",
+
+        },
+
+        "silla-modern": {
+            title: "Silla Modern Parota",
+            price: "$5,000 MXN",
+            desc: "Silla de diseño minimalista con estructura de parota sólida y asiento de tela tejida. Ideal para espacios modernos.",
+            finish: "Poliuretano Mate grado automotriz (3 capas).",
+            material: "Parota sólida y tela tejida de alta calidad.",
+            maintenance: "Limpiar con paño húmedo. No usar químicos abrasivos.",
+            images: ["img/sillas/modern/modern1.jpeg", "img/sillas/modern/modern3.png", "img/sillas/modern/modern2.png", "img/sillas/modern/modern4.png"],
+            sizes: ["(Alto 82cm x Largo 44cm x Ancho 47cm)"],
+            category: "Sillas",
+            categoryLink: "sillas.html",
+
+        },
+
+        "silla-venecia": {
+            title: "Silla Venecia Parota",
+            price: "$5,000 MXN",
+            desc: "Silla de diseño minimalista con estructura de parota sólida y asiento de tela tejida. Ideal para espacios modernos.",
+            finish: "Poliuretano Mate grado automotriz (3 capas).",
+            material: "Parota sólida y tela tejida de alta calidad.",
+            maintenance: "Limpiar con paño húmedo. No usar químicos abrasivos.",
+            images: ["img/sillas/venecia/venecia1.png", "img/sillas/venecia/venecia2.png", "img/sillas/venecia/venecia3.png", "img/sillas/venecia/venecia4.png"],
+            sizes: ["(Alto 62cm x Largo 52cm x Ancho 54cm)"],
             category: "Sillas",
             categoryLink: "sillas.html",
 
