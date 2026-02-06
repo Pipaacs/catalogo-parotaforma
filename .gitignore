@@ -1,0 +1,15 @@
+# Basura de Mac
+.DS_Store
+
+# Si usas Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Si usas Node/Web
+node_modules/
+npm-debug.log
+.env
+
+

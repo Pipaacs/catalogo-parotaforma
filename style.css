@@ -1,0 +1,426 @@
+/* ================= VARIABLES Y CONFIGURACIÓN ================= */
+:root {
+    --color-bg-main: #ffffff;
+    --color-bg-warm: #f9f8f4; /* Tono crema suave para secciones */
+    --color-text-dark: #222222;
+    --color-text-light: #666666;
+    --color-accent: #967d69;
+    --font-main: 'Montserrat', sans-serif;
+    --section-padding: 80px 0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--color-bg-main);
+    color: var(--color-text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a { text-decoration: none; color: inherit; transition: opacity 0.3s ease; }
+a:hover { opacity: 0.7; }
+ul { list-style: none; }
+img { max-width: 100%; height: auto; display: block; }
+
+/* Utilidades */
+.container { width: 90%; max-width: 1200px; margin: 0 auto; }
+.text-center { text-align: center; }
+.section-padding { padding: var(--section-padding); }
+.bg-warm { background-color: var(--color-bg-warm); }
+
+h1, h2, h3, h4 { font-weight: 500; letter-spacing: 0.5px; }
+.section-title { font-size: 2rem; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; }
+
+/* Botones */
+.btn {
+    display: inline-block; padding: 12px 30px;
+    text-transform: uppercase; font-size: 0.85rem;
+    letter-spacing: 1px; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--color-text-dark);
+    background-color: var(--color-text-dark); color: white;
+    transition: all 0.3s ease;
+}
+.btn:hover { background-color: transparent; color: var(--color-text-dark); }
+
+/* ================= HEADER ================= */
+.site-header {
+    padding: 20px 0; background: white;
+    border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 100;
+}
+.header-content { display: flex; justify-content: space-between; align-items: center; }
+.logo {
+    font-size: 1.3rem; /* Lo bajamos un poquito (de 1.5 a 1.3) */
+    font-weight: 600;
+    letter-spacing: 1px;
+    flex-shrink: 0; /* Evita que el logo se aplaste */
+    margin-right: 10px;
+}
+
+.main-nav ul {
+    display: flex;
+    gap: 15px; /* Antes tenías 30px o 20px, lo bajamos a 15px */
+    align-items: center; /* Asegura que estén centrados verticalmente */
+}
+.main-nav a {
+    font-size: 0.8rem; /* Antes era 0.9rem. Esto ayuda mucho a que quepan */
+    text-transform: uppercase;
+    letter-spacing: 0.5px; /* Reducimos el espaciado entre letras también */
+    font-weight: 500;
+    white-space: nowrap; /* IMPORTANTE: Esto evita que textos largos como "Muebles TV" se partan en dos líneas */
+}
+.header-icons { display: flex; gap: 20px; font-size: 0.9rem; }
+
+/* Menú Móvil (Hamburguesa) */
+.menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.bar { width: 25px; height: 2px; background-color: var(--color-text-dark); }
+
+/* ================= HERO SECTION ================= */
+.hero-section {
+    height: 80vh; background-size: cover; background-position: center;
+    position: relative; display: flex; align-items: center;
+}
+.hero-overlay { background: rgba(0,0,0,0.2); width: 100%; height: 100%; display: flex; align-items: center; }
+.hero-content { color: white; max-width: 600px; }
+.hero-content h1 { font-size: 3.5rem; line-height: 1.2; margin-bottom: 20px; }
+
+/* ================= GRIDS ================= */
+/* ================= GRID COLLAGE (NUEVO DISEÑO 2x2) ================= */
+.grid-collage {
+    display: grid;
+    /* Aquí definimos 2 columnas iguales */
+    grid-template-columns: 1fr; 
+    gap: 30px; /* Espacio generoso entre fotos para que no se vean pegadas */
+}
+
+.grid-item {
+    position: relative;
+    height: 350px; /* Altura fija para que TODAS se vean iguales */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end; /* Texto abajo */
+    overflow: hidden;
+    border-radius: 4px; /* Un toque sutil de suavidad en las esquinas */
+    transition: transform 0.4s ease;
+}
+
+/* Efecto Overlay: Oscurece un poco la foto para que el texto blanco resalte */
+.grid-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    z-index: 1;
+}
+
+.grid-text {
+    position: relative;
+    z-index: 2; /* Para que el texto quede encima de la capa oscura */
+    width: 100%;
+    padding: 25px;
+    color: white; /* Texto blanco se ve más elegante */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.grid-text h3 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.grid-text span {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    border: 1px solid white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+/* Animación al pasar el mouse */
+.grid-item:hover {
+    transform: translateY(-5px); /* Se levanta un poquito */
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.grid-item:hover .grid-text span {
+    background: white;
+    color: black;
+}
+
+/* PANTALLAS GRANDES (Laptop/PC): Se pone en 2 columnas */
+@media (min-width: 768px) {
+    .grid-collage {
+        grid-template-columns: 1fr 1fr; /* 2 columnas idénticas */
+    }
+}
+/* Productos */
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px 20px; }
+.product-card { text-align: center; }
+.product-image {
+    margin-bottom: 15px;
+    overflow: hidden;
+    background: #f4f4f4;
+    /* NUEVO: Fuerza un contenedor cuadrado */
+    aspect-ratio: 1 / 1; 
+    /* Opcional: si quieres que sean rectangulares verticales usa "aspect-ratio: 3 / 4;" */
+}
+.product-image img {
+    transition: transform 0.5s ease;
+    width: 100%;
+    /* NUEVO: Fuerza a la imagen a llenar el cuadrado y recortarse si es necesario */
+    height: 100%;
+    object-fit: cover; 
+    object-position: center;
+}
+.product-card:hover .product-image img { transform: scale(1.05); }
+.product-info h3 { font-size: 1rem; margin-bottom: 5px; font-weight: 500; }
+.price { color: var(--color-text-light); font-size: 0.9rem; }
+
+/* ================= PÁGINA DETALLE ================= */
+.breadcrumbs { padding: 20px 0; font-size: 0.85rem; color: var(--color-text-light); }
+.product-detail-container { display: grid; grid-template-columns: 1fr; gap: 40px; }
+.main-image-container img { width: 100%; object-fit: cover; }
+.thumbnail-row { display: flex; gap: 15px; margin-top: 15px; overflow-x: auto; }
+.thumb-img { width: 80px; height: 80px; object-fit: cover; cursor: pointer; opacity: 0.6; }
+.thumb-img.active-thumb { opacity: 1; border: 1px solid #000; }
+.product-price { font-size: 1.5rem; margin-bottom: 20px; color: var(--color-text-dark); }
+
+@media (min-width: 900px) {
+    .product-detail-container { grid-template-columns: 1.5fr 1fr; gap: 60px; }
+}
+
+/* ================= FOOTER ================= */
+.site-footer { background: var(--color-bg-warm); padding: 60px 0 20px; margin-top: 40px; }
+.footer-grid { display: grid; gap: 40px; margin-bottom: 40px; }
+.footer-col h4 { text-transform: uppercase; font-size: 0.9rem; margin-bottom: 20px; }
+.footer-col a { color: var(--color-text-light); font-size: 0.9rem; display: block; margin-bottom: 10px; }
+
+/* Responsive General */
+@media (max-width: 768px) {
+    .menu-toggle { display: flex; }
+    .main-nav {
+        display: none; position: absolute; top: 100%; left: 0; width: 100%;
+        background: white; flex-direction: column; padding: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .main-nav.active { display: flex; }
+    .main-nav ul { flex-direction: column; text-align: center; }
+    .hero-content h1 { font-size: 2.5rem; }
+}
+
+/* ================= FLECHAS DE NAVEGACIÓN ================= */
+.main-image-container {
+    position: relative; /* Vital para que las flechas se queden dentro */
+}
+
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.7); /* Fondo blanco semitransparente */
+    border: none;
+    color: #333;
+    font-size: 24px;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 50%; /* Botón redondo */
+    transition: all 0.3s ease;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.nav-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8); /* Se oscurece al pasar el mouse */
+    color: white;
+}
+
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+/* Para celulares, hacemos las flechas un poco más chicas */
+@media (max-width: 768px) {
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+}
+
+/* ================= BUSCADOR DESPLEGABLE ================= */
+.search-panel {
+    position: absolute;
+    top: 100%; /* Se coloca justo debajo del header */
+    left: 0;
+    width: 100%;
+    background: white;
+    border-bottom: 1px solid #ddd;
+    padding: 30px 0;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    z-index: 90;
+    
+    /* Animación de despliegue */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+}
+
+/* Clase para mostrarlo */
+.search-panel.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.search-top {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+#search-input {
+    width: 100%;
+    border: none;
+    font-size: 1.5rem;
+    font-family: var(--font-main);
+    outline: none;
+    color: var(--color-text-dark);
+}
+
+#close-search {
+    font-size: 2rem;
+    cursor: pointer;
+    color: #999;
+}
+
+#close-search:hover { color: black; }
+
+/* Resultados */
+.search-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    max-height: 400px; /* Si hay muchos, se hace scroll */
+    overflow-y: auto;
+}
+
+.search-item {
+    text-align: center;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.search-item:hover { opacity: 0.7; }
+
+.search-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.search-item h4 {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.search-item p {
+    font-size: 0.8rem;
+    color: var(--color-accent);
+}
+
+/* ================= BOTÓN WHATSAPP PREMIUM ================= */
+.btn-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* Degradado elegante en vez de color plano */
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 50px; /* Bordes totalmente redondos */
+    text-decoration: none;
+    font-weight: 700;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    /* Sombra con brillo verde */
+    box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-whatsapp:hover {
+    transform: translateY(-3px); /* Se eleva un poquito */
+    box-shadow: 0 15px 25px rgba(37, 211, 102, 0.4);
+    background: linear-gradient(135deg, #20bd5a 0%, #0e6d62 100%);
+}
+
+.btn-whatsapp span {
+    font-size: 1.4rem;
+    margin-right: 10px;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+}
+
+/* ================= EFECTO LUPA (ZOOM) ================= */
+.main-image-container {
+    overflow: hidden; /* Esto evita que la imagen gigante se salga del cuadro */
+    cursor: crosshair; /* Cambia el cursor para indicar que se puede hacer zoom */
+}
+
+/* La imagen necesita una transición suave para entrar al zoom, 
+   pero rápida para moverse con el mouse */
+.main-image-container img {
+    transition: transform 0.2s ease-out; 
+    transform-origin: center center;
+}
+
+
+/* ================= BOTONES DE VARIANTES (PÍLDORAS) ================= */
+.variant-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Espacio entre botones */
+}
+
+.variant-btn {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 30px; /* Bordes redondos */
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif; /* Tu fuente */
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    color: #555;
+}
+
+.variant-btn:hover {
+    border-color: #333;
+}
+
+/* ESTILO CUANDO ESTÁ SELECCIONADO (ACTIVO) */
+.variant-btn.active {
+    background-color: #222; /* Negro Parota */
+    color: white;
+    border-color: #222;
+    transform: scale(1.05); /* Crece un poquito */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+
+/* https://github.com/Pipaacs/catalogo-parotaforma.git */
