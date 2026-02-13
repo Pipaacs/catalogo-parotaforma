@@ -56,30 +56,8 @@
 
     <section class="section-padding">
         <div class="container">
-            <div class="product-grid">
-                <div class="product-card">
-                    <a href="producto-detalle.html?id=cantina1">
-                        <div class="product-image">
-                            <img src="img/cantinas/cantina1.jpeg" alt="Barra Parota">
-                        </div>
-                        <div class="product-info">
-                            <h3>Cantina 1</h3>
-                            <p class="price">$25,000 MXN</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="product-card">
-                    <a href="producto-detalle.html?id=cantina2">
-                        <div class="product-image">
-                            <img src="img/cantinas/cantina2.jpeg" alt="Mueble Licorera">
-                        </div>
-                        <div class="product-info">
-                            <h3>Cantina 2</h3>
-                            <p class="price">$18,500 MXN</p>
-                        </div>
-                    </a>
-                </div>
-                
+            <div class="product-grid" id="contenedor-cantinas">
+
             </div>
         </div>
     </section>
@@ -87,6 +65,10 @@
     <footer class="site-footer">
         <div class="container text-center"><p>&copy; 2024 Parota Studio.</p></div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="supabase-config.js"></script>
+    
     <script src="main.js"></script>
 </body>
 </html>

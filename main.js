@@ -98,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- APARTADO SILLAS ---
         "silla-grecia": {
             title: "Silla Grecia",
-            mlLink: "https://articulo.mercadolibre.com.mx/MLM-2576780809-silla-grecia-parota-forma-1-unidad-diseno-moderno-_JM",
             price: "$4,500 MXN",
             desc: "Silla artesanal que combina la robustez de la parota con la frescura del tejido natural. Perfecta para climas cálidos y comedores relajados.",
             finish: "Aceite de linaza natural (acabado poro abierto).",
@@ -787,4 +786,118 @@ Medida: ${selectedSize}${variantText}
         });
     }
 
+});
+
+// ==========================================
+// 1. CARGAR CATÁLOGO (SILLAS, COMEDORES, ETC)
+// ==========================================
+async function cargarCatalogoDinamico() {
+    // Definimos qué ID de HTML corresponde a qué categoría en Supabase
+    const configuracionPaginas = [
+        { id: 'contenedor-sillas', categoria: 'Sillas' },
+        { id: 'contenedor-comedores', categoria: 'Comedores' },
+        { id: 'contenedor-credenzas', categoria: 'Credenzas' },
+        { id: 'contenedor-escritorios', categoria: 'Escritorios' },
+        { id: 'contenedor-muebles-tv', categoria: 'Muebles TV' },
+        { id: 'contenedor-cantinas', categoria: 'Cantinas' },
+        { id: 'contenedor-cabeceras', categoria: 'Cabeceras' }
+    ];
+
+    // Buscamos en qué página estamos actualmente
+    for (let config of configuracionPaginas) {
+        const contenedor = document.getElementById(config.id);
+        
+        // Si encontramos el contenedor en el HTML actual, ejecutamos la búsqueda
+        if (contenedor) {
+            // Buscamos en Supabase solo la categoría que corresponde
+            const { data: muebles, error } = await supabaseClient
+                .from('inventario_muebles')
+                .select('*')
+                .eq('categoria', config.categoria);
+
+            contenedor.innerHTML = ''; // Limpiamos el contenedor
+
+            if (muebles && muebles.length > 0) {
+                // Inyectamos cada mueble encontrado
+                muebles.forEach(mueble => {
+                    const precioFormateado = `$${Number(mueble.precio).toLocaleString('es-MX')} MXN`;
+                    contenedor.innerHTML += `
+                        <div class="product-card">
+                            <a href="producto-detalle.html?id=${mueble.identificador}">
+                                <div class="product-image">
+                                    <img src="${mueble.imagen_url}" alt="${mueble.titulo}">
+                                </div>
+                                <div class="product-info">
+                                    <h3>${mueble.titulo}</h3>
+                                    <p class="price">${precioFormateado}</p>
+                                </div>
+                            </a>
+                        </div>
+                    `;
+                });
+            } else {
+                contenedor.innerHTML = '<p style="text-align:center; width:100%;">Aún no hay productos en esta categoría.</p>';
+            }
+            break; // Detenemos la búsqueda porque ya encontramos la página correcta
+        }
+    }
+}
+
+// ==========================================
+// 2. CARGAR DETALLE DEL PRODUCTO (AL HACER CLIC)
+// ==========================================
+async function cargarDetalleProducto() {
+    const params = new URLSearchParams(window.location.search);
+    const identificadorUrl = params.get('id');
+
+    if (!identificadorUrl) return; 
+
+    const { data: producto, error } = await supabaseClient
+        .from('inventario_muebles')
+        .select('*')
+        .eq('identificador', identificadorUrl)
+        .single();
+
+    if (error || !producto) {
+        document.getElementById('detalle-titulo').innerText = "Producto no encontrado.";
+        return;
+    }
+
+    document.getElementById('detalle-titulo').innerText = producto.titulo;
+    document.getElementById('detalle-precio').innerText = `$${Number(producto.precio).toLocaleString('es-MX')} MXN`;
+    document.getElementById('detalle-descripcion').innerText = producto.descripcion || 'Sin descripción disponible.';
+    document.getElementById('detalle-material').innerText = producto.material || 'N/A';
+    document.getElementById('detalle-acabado').innerText = producto.acabado || 'N/A';
+    document.getElementById('detalle-medidas').innerText = producto.medidas || 'N/A';
+
+    const imgPrincipal = document.getElementById('imagen-principal');
+    if(imgPrincipal) imgPrincipal.src = producto.imagen_url;
+
+    const contenedorGaleria = document.getElementById('contenedor-galeria');
+    if (contenedorGaleria) {
+        contenedorGaleria.innerHTML = ''; 
+        if (producto.galeria && producto.galeria.length > 0) {
+            contenedorGaleria.innerHTML += `<img src="${producto.imagen_url}" width="80" height="80" style="cursor:pointer; object-fit:cover; border-radius:5px; border: 1px solid #ccc;" onclick="cambiarImagenPrincipal(this.src)">`;
+            producto.galeria.forEach(imgUrl => {
+                contenedorGaleria.innerHTML += `<img src="${imgUrl}" width="80" height="80" style="cursor:pointer; object-fit:cover; border-radius:5px; border: 1px solid #ccc;" onclick="cambiarImagenPrincipal(this.src)">`;
+            });
+        }
+    }
+}
+
+function cambiarImagenPrincipal(nuevaUrl) {
+    document.getElementById('imagen-principal').src = nuevaUrl;
+}
+
+// ==========================================
+// 3. INICIALIZAR TODO AL CARGAR LA PÁGINA
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Intenta cargar el catálogo dinámico (si estamos en sillas, comedores, etc)
+    cargarCatalogoDinamico();
+    
+    // 2. Si detecta que estamos en la página de detalles, carga la información individual
+    if (window.location.pathname.includes('producto-detalle.html')) {
+        cargarDetalleProducto();
+    }
 });

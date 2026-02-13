@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | Parota&Forma</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background-color: #f4f5f7; margin: 0; color: #333; }
+        
+        /* Barra de navegación superior */
+        .topbar { background: #2c3e50; color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .topbar h1 { margin: 0; font-size: 20px; font-weight: 600; }
+        .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.3s; }
+        .btn-logout:hover { background: #c0392b; }
+
+        /* Contenedor principal Grid */
+        .dashboard-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; padding: 40px; max-width: 1400px; margin: 0 auto; align-items: start; }
+        
+        /* Tarjetas blancas (Formulario y Lista) */
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .card h2 { margin-top: 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 25px; font-size: 18px; color: #2c3e50; }
+
+        /* Estilos del formulario */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
+        .form-control { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; box-sizing: border-box; background: #fafafa; }
+        .form-control:focus { outline: none; border-color: #b58b00; background: white; }
+        textarea.form-control { resize: vertical; min-height: 80px; }
+        
+        /* Botón de guardar */
+        .btn-save { width: 100%; padding: 14px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+        .btn-save:hover { background: #219653; }
+
+        /* Estilos de la lista de productos */
+        .product-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; transition: box-shadow 0.2s; }
+        .product-item:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-color: #ddd; }
+        .product-info { display: flex; align-items: center; gap: 15px; }
+        .product-info img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
+        .product-details h4 { margin: 0 0 4px 0; font-size: 15px; color: #333; }
+        .product-details p { margin: 0; font-size: 13px; color: #777; }
+        .badge { background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 8px; }
+        
+        .btn-delete { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: background 0.2s; }
+        .btn-delete:hover { background: #fecaca; }
+
+        /* Adaptabilidad a móviles */
+        @media (max-width: 900px) {
+            .dashboard-container { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <h1>Parota&Forma CMS</h1>
+        <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+
+    <div class="dashboard-container">
+        
+        <div class="card">
+            <h2>Añadir Nuevo Producto</h2>
+            
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Título del Mueble</label>
+                    <input type="text" id="titulo" class="form-control" placeholder="Ej. Silla Grecia Oscura">
+                </div>
+                
+                <div class="form-group">
+                    <label>Identificador URL (Sin espacios)</label>
+                    <input type="text" id="identificador" class="form-control" placeholder="ej: silla-grecia-oscura">
+                </div>
+                
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="categoria" class="form-control">
+                        <option value="Sillas">Sillas</option>
+                        <option value="Comedores">Comedores</option>
+                        <option value="Credenzas">Credenzas</option>
+                        <option value="Escritorios">Escritorios</option>
+                        <option value="Muebles TV">Muebles TV</option>
+                        <option value="Cantinas">Cantinas</option>
+                        <option value="Cabeceras">Cabeceras</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Precio ($)</label>
+                    <input type="number" id="precio" class="form-control" placeholder="Ej. 1500">
+                </div>
+                
+                <div class="form-group">
+                    <label>Material</label>
+                    <input type="text" id="material" class="form-control" placeholder="Ej. Madera de Parota">
+                </div>
+                
+                <div class="form-group">
+                    <label>Acabado</label>
+                    <input type="text" id="acabado" class="form-control" placeholder="Ej. Barniz Mate">
+                </div>
+                
+                <div class="form-group">
+                    <label>Medidas</label>
+                    <input type="text" id="medidas" class="form-control" placeholder="Ej. 40x40x100 cm">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Descripción corta</label>
+                    <textarea id="descripcion" class="form-control" placeholder="Describe brevemente el mueble..."></textarea>
+                </div>
+
+                <div class="form-group full-width" style="background:#f8fafc; padding: 15px; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                    <label style="color:#0f172a;">🖼️ Imagen Principal (Portada)</label>
+                    <input type="file" id="imagen" accept="image/*" class="form-control" style="background: white;">
+                    
+                    <label style="margin-top: 15px; color:#0f172a;">📸 Imágenes de Galería (Puedes seleccionar varias)</label>
+                    <input type="file" id="galeria" accept="image/*" multiple class="form-control" style="background: white;">
+                </div>
+            </div>
+
+            <button class="btn-save" onclick="agregarProducto()" id="btnGuardar">Guardar Producto</button>
+        </div>
+
+        <div class="card">
+            <h2>Inventario Actual</h2>
+            <div id="lista-productos">
+                </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script>
+        // 1. Verificar seguridad
+        async function checkSesion() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) window.location.href = "login.html";
+            else cargarLista();
+        }
+        checkSesion();
+
+        async function cerrarSesion() {
+            await supabaseClient.auth.signOut();
+            window.location.href = "login.html";
+        }
+
+        // 2. Guardar producto
+        async function agregarProducto() {
+            const btn = document.getElementById('btnGuardar');
+            const titulo = document.getElementById('titulo').value;
+            const identificador = document.getElementById('identificador').value;
+            const categoria = document.getElementById('categoria').value;
+            const precio = document.getElementById('precio').value;
+            const descripcion = document.getElementById('descripcion').value;
+            const acabado = document.getElementById('acabado').value;
+            const material = document.getElementById('material').value;
+            const medidas = document.getElementById('medidas').value;
+            
+            const filePrincipal = document.getElementById('imagen').files[0];
+            const filesGaleria = document.getElementById('galeria').files;
+
+            if(!titulo || !identificador || !precio || !filePrincipal) {
+                return alert("⚠️ Faltan datos: Título, Identificador, Precio y Foto Principal son obligatorios.");
+            }
+
+            btn.innerText = "Subiendo fotos y guardando... ⏳";
+            btn.style.background = "#f39c12"; // Color naranja de espera
+            btn.disabled = true;
+
+            try {
+                // Subir imagen principal
+                const namePrincipal = `${Date.now()}-prin-${filePrincipal.name.replace(/\s+/g, '-')}`;
+                await supabaseClient.storage.from('galeria_muebles').upload(namePrincipal, filePrincipal);
+                const urlPrincipal = supabaseClient.storage.from('galeria_muebles').getPublicUrl(namePrincipal).data.publicUrl;
+
+                // Subir galería
+                let urlsGaleria = [];
+                for(let i = 0; i < filesGaleria.length; i++) {
+                    const fileExtra = filesGaleria[i];
+                    const nameExtra = `${Date.now()}-gal-${fileExtra.name.replace(/\s+/g, '-')}`;
+                    await supabaseClient.storage.from('galeria_muebles').upload(nameExtra, fileExtra);
+                    const urlExtra = supabaseClient.storage.from('galeria_muebles').getPublicUrl(nameExtra).data.publicUrl;
+                    urlsGaleria.push(urlExtra);
+                }
+
+                // Guardar en tabla
+                const { error: dbError } = await supabaseClient.from('inventario_muebles').insert([{
+                    titulo, identificador, categoria, precio, descripcion, acabado, material, medidas,
+                    imagen_url: urlPrincipal,
+                    galeria: urlsGaleria
+                }]);
+
+                if(dbError) throw dbError;
+
+                alert("✅ ¡Producto subido con éxito!");
+                
+                // Limpiar formulario
+                document.querySelectorAll('.form-control').forEach(input => input.value = '');
+                document.getElementById('categoria').value = 'Sillas'; // Reset a Sillas
+                cargarLista();
+
+            } catch (error) {
+                console.error(error);
+                alert("❌ Ocurrió un error al guardar. Revisa tu conexión o las imágenes.");
+            } finally {
+                // Restaurar botón
+                btn.innerText = "Guardar Producto";
+                btn.style.background = "#27ae60";
+                btn.disabled = false;
+            }
+        }
+
+        // 3. Cargar lista con diseño bonito
+        async function cargarLista() {
+            const div = document.getElementById('lista-productos');
+            div.innerHTML = '<p style="text-align:center; color:#888;">Cargando inventario...</p>';
+
+            const { data } = await supabaseClient.from('inventario_muebles').select('*').order('id', { ascending: false });
+            div.innerHTML = '';
+            
+            if(data.length === 0) {
+                div.innerHTML = '<p style="text-align:center; color:#888;">No hay productos registrados.</p>';
+                return;
+            }
+
+            data.forEach(p => {
+                const precioFormat = `$${Number(p.precio).toLocaleString('es-MX')}`;
+                div.innerHTML += `
+                <div class="product-item">
+                    <div class="product-info">
+                        <img src="${p.imagen_url}" alt="${p.titulo}">
+                        <div class="product-details">
+                            <h4>${p.titulo} <span class="badge">${p.categoria}</span></h4>
+                            <p>${precioFormat} | ID: ${p.identificador}</p>
+                        </div>
+                    </div>
+                    <button class="btn-delete" onclick="eliminarProducto(${p.id}, '${p.titulo}')">Eliminar</button>
+                </div>`;
+            });
+        }
+
+        // 4. Eliminar
+        async function eliminarProducto(id, nombre) {
+            if(confirm(`⚠️ ¿Estás seguro que deseas eliminar el producto: "${nombre}"? \nEsta acción no se puede deshacer.`)) {
+                await supabaseClient.from('inventario_muebles').delete().eq('id', id);
+                cargarLista();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -57,36 +57,19 @@
 
     <section class="section-padding">
         <div class="container">
-            <div class="product-grid">
-                <div class="product-card">
-                    <a href="producto-detalle.html?id=cabecera1">
-                        <div class="product-image">
-                            <img src="img/cabeceras/cabecera1.jpeg" alt="Cabecera Live Edge">
-                        </div>
-                        <div class="product-info">
-                            <h3>Cabecera Orgánica (King Size)</h3>
-                            <p class="price">$18,000 MXN</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="product-card">
-                    <a href="producto-detalle.html?id=cabecera2">
-                        <div class="product-image">
-                            <img src="img/cabeceras/cabecera2.jpeg" alt="Cabecera Recta">
-                        </div>
-                        <div class="product-info">
-                            <h3>Cabecera Minimalista (Queen)</h3>
-                            <p class="price">$14,500 MXN</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
+            <div class="product-grid" id="contenedor-cabeceras"></div>
         </div>
     </section>
 
     <footer class="site-footer">
         <div class="container text-center"><p>&copy; 2024 Parota Studio.</p></div>
     </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="supabase-config.js"></script>
+    
     <script src="main.js"></script>
+
 </body>
 </html>

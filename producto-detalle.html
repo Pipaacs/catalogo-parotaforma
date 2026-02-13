@@ -3,144 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Catalogo | Parota&Forma </title>
+    <title>Detalles del Mueble | Parota&Forma</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header class="site-header">
-    <div class="container header-content">
-        <div class="menu-toggle">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-
-        <a href="index.html" class="logo">Parota&Forma</a>
-
-        <nav class="main-nav">
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="comedores.html">Comedores</a></li>
-                <li><a href="sillas.html">Sillas</a></li>
-                <li><a href="credenzas.html">Credenzas</a></li>
-                <li><a href="muebles-tv.html">Muebles TV</a></li>
-                <li><a href="escritorios.html">Escritorios</a></li>
-                <li><a href="cabeceras.html">Cabeceras</a></li>
-                <li><a href="cantinas.html">Cantinas</a></li>
-            </ul>
-        </nav>
-
-        <div class="header-icons">
-            <a href="#" id="search-btn">Buscar</a>
-            </div>
-    </div>
-
-    <div class="search-panel" id="search-panel">
-        <div class="container">
-            <div class="search-top">
-                <input type="text" id="search-input" placeholder="¿Qué buscas?">
-                <span id="close-search">&times;</span>
-            </div>
-            <div id="search-results-container" class="search-results-grid"></div>
-        </div>
-    </div>
-</header>
-
-    <div class="container">
-        <div class="breadcrumbs">
-    <a href="index.html">Inicio</a> / 
-    <a href="comedores.html" id="bread-category">Colección</a> / 
-    <span>Cargando...</span>
-</div>
-
-        <div class="product-detail-container">
+    <div class="detalle-container" style="max-width: 1000px; margin: 40px auto; padding: 20px; display: flex; flex-wrap: wrap; gap: 40px;">
+        
+        <div style="flex: 1; min-width: 300px;">
+            <img id="imagen-principal" src="" alt="Cargando imagen..." style="width: 100%; border-radius: 8px; object-fit: cover; aspect-ratio: 4/3; background: #f4f4f4;">
             
-            <div class="product-gallery">
-                <div class="main-image-container">
-                    <img id="main-product-image" src="https://source.unsplash.com/random/800x800/?dining-table,wood,detail" alt="Mesa Principal">
-                    <button class="nav-btn prev-btn" id="btn-prev">&#10094;</button>
-    <button class="nav-btn next-btn" id="btn-next">&#10095;</button>
+            <div id="contenedor-galeria" style="display: flex; gap: 10px; margin-top: 15px; overflow-x: auto;">
                 </div>
-                <div class="thumbnail-row">
-                    <img class="thumb-img active-thumb" src="https://source.unsplash.com/random/800x800/?dining-table,wood,detail" alt="Vista 1">
-                    <img class="thumb-img" src="https://source.unsplash.com/random/800x800/?wood-texture" alt="Textura">
-                    <img class="thumb-img" src="https://source.unsplash.com/random/800x800/?dining-room" alt="En ambiente">
-                    <img class="thumb-img" src="https://source.unsplash.com/random/800x800/?table-leg" alt="Detalle Base">
-                </div>
+        </div>
+
+        <div style="flex: 1; min-width: 300px;">
+            <h1 id="detalle-titulo">Cargando producto...</h1>
+            <h2 id="detalle-precio" style="color: #b58b00; margin-top: 10px;"></h2>
+            
+            <div style="margin-top: 20px;">
+                <h3>Descripción</h3>
+                <p id="detalle-descripcion"></p>
             </div>
 
-            <div class="product-info-col">
-                <h1>Mesa Guanacaste Edición Especial</h1>
-                <p class="product-price">$45,000 MXN</p>
-                
-                <div class="product-description">
-    <p id="dynamic-desc" style="margin-bottom: 20px;">
-        Cargando descripción...
-    </p>
-
-    <div style="background: #f9f9f9; padding: 15px; border-radius: 4px; font-size: 0.9rem;">
-        <p style="margin-bottom: 8px;">
-            <strong>Acabado:</strong> <span id="dynamic-finish"></span>
-        </p>
-        <p style="margin-bottom: 8px;">
-            <strong>Material / Base:</strong> <span id="dynamic-material"></span>
-        </p>
-        <p style="margin-bottom: 0;">
-            <strong>Mantenimiento:</strong> <span id="dynamic-maintenance"></span>
-        </p>
-    </div>
-</div>
-
-                <div style="margin: 20px 0;">
-    <label style="font-weight: 600; font-size: 0.9rem;">Opciones / Medidas:</label>
-    <select id="dynamic-select" style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; background: white;">
-        </select>
-</div>
-
-<div class="form-group" id="variant-container" style="display: none; margin-top: 20px;">
-    <label id="variant-label" style="display:block; margin-bottom: 10px; font-weight: 600;">Opción:</label> 
-    
-    <div id="dynamic-variant-buttons" class="variant-grid"></div>
-    
-    <input type="hidden" id="selected-variant-value" value="">
-</div>
-
-                
-                <a href="#" id="whatsapp-link" target="_blank" class="btn-whatsapp">
-    <span style="font-size: 1.2rem; margin-right: 8px;">&#128172;</span> Cotizar este mueble
-</a>
-<br>
-<a id="ml-link" href="#" target="_blank" class="btn-ml" style="display: none;">
-    Ver colores en Mercado Libre
-</a>
-<br>
-
-                <div class="product-meta">
-                    <p>Tiempo de entrega: 3-4 semanas</p>
-                    <p>Envío asegurado a todo México</p>
-                </div>
+            <div style="margin-top: 20px;">
+                <h3>Ficha Técnica</h3>
+                <ul style="line-height: 1.8; list-style: none; padding: 0;">
+                    <li style="border-bottom: 1px solid #eee; padding: 5px 0;"><strong>Material:</strong> <span id="detalle-material"></span></li>
+                    <li style="border-bottom: 1px solid #eee; padding: 5px 0;"><strong>Acabado:</strong> <span id="detalle-acabado"></span></li>
+                    <li style="border-bottom: 1px solid #eee; padding: 5px 0;"><strong>Medidas:</strong> <span id="detalle-medidas"></span></li>
+                </ul>
             </div>
-
+            
+            <button style="margin-top: 30px; padding: 15px 30px; background-color: #333; color: white; border: none; cursor: pointer; font-size: 16px; border-radius: 5px; width: 100%;">
+                Me interesa
+            </button>
         </div>
-        <section class="section-padding" id="related-section" style="display: none; border-top: 1px solid #eee; margin-top: 60px;">
-        <div class="container">
-            <h3 class="text-center" style="margin-bottom: 40px; font-size: 1.5rem;">También te podría gustar</h3>
-            <div class="product-grid" id="related-products-grid" style="justify-content: center;"></div>
-        </div>
-    </section>
     </div>
 
-    <footer class="site-footer">
-        <div class="container footer-grid">
-            <div class="footer-col">
-                <h4>PAROTA STUDIO</h4>
-                <p>2024. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
