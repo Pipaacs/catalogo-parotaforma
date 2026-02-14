@@ -5,24 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración | Parota&Forma</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌲%3C/text%3E%3C/svg%3E">
     <style>
+        /* Mismos estilos que ya tenías, no cambian */
         body { font-family: 'Montserrat', sans-serif; background-color: #f4f5f7; margin: 0; color: #333; }
-        
-        /* Barra de navegación superior */
         .topbar { background: #2c3e50; color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .topbar h1 { margin: 0; font-size: 20px; font-weight: 600; }
         .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.3s; }
         .btn-logout:hover { background: #c0392b; }
-
-        /* Contenedor principal Grid */
         .dashboard-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; padding: 40px; max-width: 1400px; margin: 0 auto; align-items: start; }
-        
-        /* Tarjetas blancas (Formulario y Lista) */
         .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .card h2 { margin-top: 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 25px; font-size: 18px; color: #2c3e50; }
-
-        /* Estilos del formulario */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group { margin-bottom: 15px; }
         .form-group.full-width { grid-column: 1 / -1; }
@@ -30,12 +22,9 @@
         .form-control { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; box-sizing: border-box; background: #fafafa; }
         .form-control:focus { outline: none; border-color: #b58b00; background: white; }
         textarea.form-control { resize: vertical; min-height: 80px; }
-        
-        /* Botón de guardar */
         .btn-save { width: 100%; padding: 14px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
         .btn-save:hover { background: #219653; }
-
-        /* Estilos de la lista de productos */
+        .btn-cancel { width: 100%; padding: 10px; background: #95a5a6; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 10px; display: none; }
         .product-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; transition: box-shadow 0.2s; }
         .product-item:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-color: #ddd; }
         .product-info { display: flex; align-items: center; gap: 15px; }
@@ -43,15 +32,9 @@
         .product-details h4 { margin: 0 0 4px 0; font-size: 15px; color: #333; }
         .product-details p { margin: 0; font-size: 13px; color: #777; }
         .badge { background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 8px; }
-        
-        .btn-delete { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: background 0.2s; }
-        .btn-delete:hover { background: #fecaca; }
-
-        /* Adaptabilidad a móviles */
-        @media (max-width: 900px) {
-            .dashboard-container { grid-template-columns: 1fr; }
-            .form-grid { grid-template-columns: 1fr; }
-        }
+        .btn-delete { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
+        .btn-edit { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; margin-right: 5px; }
+        @media (max-width: 900px) { .dashboard-container { grid-template-columns: 1fr; } .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -64,7 +47,7 @@
     <div class="dashboard-container">
         
         <div class="card">
-            <h2>Añadir Nuevo Producto</h2>
+            <h2 id="titulo-form">Añadir Nuevo Producto</h2>
             
             <div class="form-grid">
                 <div class="form-group full-width">
@@ -74,7 +57,7 @@
                 
                 <div class="form-group">
                     <label>Identificador URL (Sin espacios)</label>
-                    <input type="text" id="identificador" class="form-control" placeholder="ej: silla-grecia-oscura">
+                    <input type="text" id="identificador" class="form-control" placeholder="ej: silla-grecia">
                 </div>
                 
                 <div class="form-group">
@@ -91,46 +74,48 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Precio ($)</label>
-                    <input type="number" id="precio" class="form-control" placeholder="Ej. 1500">
+                    <label>Precio Normal ($)</label>
+                    <input type="number" id="precio" class="form-control" placeholder="Ej. 2000">
+                </div>
+                <div class="form-group" style="background: #fff3cd; padding: 10px; border-radius: 8px; border: 1px solid #ffeeba;">
+                    <label style="color: #856404;">🔥 Precio de Oferta ($) Opcional</label>
+                    <input type="number" id="precio_rebaja" class="form-control" placeholder="Ej. 1500 (Dejar en blanco si no hay oferta)">
                 </div>
                 
                 <div class="form-group">
                     <label>Material</label>
-                    <input type="text" id="material" class="form-control" placeholder="Ej. Madera de Parota">
+                    <input type="text" id="material" class="form-control">
                 </div>
-                
                 <div class="form-group">
                     <label>Acabado</label>
-                    <input type="text" id="acabado" class="form-control" placeholder="Ej. Barniz Mate">
+                    <input type="text" id="acabado" class="form-control">
                 </div>
-                
                 <div class="form-group">
                     <label>Medidas</label>
-                    <input type="text" id="medidas" class="form-control" placeholder="Ej. 40x40x100 cm">
+                    <input type="text" id="medidas" class="form-control">
                 </div>
-
                 <div class="form-group full-width">
                     <label>Descripción corta</label>
-                    <textarea id="descripcion" class="form-control" placeholder="Describe brevemente el mueble..."></textarea>
+                    <textarea id="descripcion" class="form-control"></textarea>
                 </div>
 
                 <div class="form-group full-width" style="background:#f8fafc; padding: 15px; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                    <p style="font-size: 12px; color: #64748b; margin-top:0;">*Si estás Editando y no seleccionas imágenes nuevas, se conservarán las que ya tenía.</p>
                     <label style="color:#0f172a;">🖼️ Imagen Principal (Portada)</label>
                     <input type="file" id="imagen" accept="image/*" class="form-control" style="background: white;">
                     
-                    <label style="margin-top: 15px; color:#0f172a;">📸 Imágenes de Galería (Puedes seleccionar varias)</label>
+                    <label style="margin-top: 15px; color:#0f172a;">📸 Galería Extra (Puedes seleccionar varias)</label>
                     <input type="file" id="galeria" accept="image/*" multiple class="form-control" style="background: white;">
                 </div>
             </div>
 
-            <button class="btn-save" onclick="agregarProducto()" id="btnGuardar">Guardar Producto</button>
+            <button class="btn-save" onclick="guardarProducto()" id="btnGuardar">Guardar Producto</button>
+            <button class="btn-cancel" onclick="cancelarEdicion()" id="btnCancelar">Cancelar Edición</button>
         </div>
 
         <div class="card">
             <h2>Inventario Actual</h2>
-            <div id="lista-productos">
-                </div>
+            <div id="lista-productos"></div>
         </div>
 
     </div>
@@ -138,7 +123,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script>
-        // 1. Verificar seguridad
+        let productoEditandoId = null; // Variable mágica para saber si estamos editando o creando
+
         async function checkSesion() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             if (!user) window.location.href = "login.html";
@@ -151,13 +137,13 @@
             window.location.href = "login.html";
         }
 
-        // 2. Guardar producto
-        async function agregarProducto() {
+        async function guardarProducto() {
             const btn = document.getElementById('btnGuardar');
             const titulo = document.getElementById('titulo').value;
             const identificador = document.getElementById('identificador').value;
             const categoria = document.getElementById('categoria').value;
             const precio = document.getElementById('precio').value;
+            const precio_rebaja = document.getElementById('precio_rebaja').value || null;
             const descripcion = document.getElementById('descripcion').value;
             const acabado = document.getElementById('acabado').value;
             const material = document.getElementById('material').value;
@@ -166,89 +152,136 @@
             const filePrincipal = document.getElementById('imagen').files[0];
             const filesGaleria = document.getElementById('galeria').files;
 
-            if(!titulo || !identificador || !precio || !filePrincipal) {
-                return alert("⚠️ Faltan datos: Título, Identificador, Precio y Foto Principal son obligatorios.");
+            if(!titulo || !identificador || !precio) {
+                return alert("⚠️ Faltan datos obligatorios (Título, Identificador o Precio).");
             }
 
-            btn.innerText = "Subiendo fotos y guardando... ⏳";
-            btn.style.background = "#f39c12"; // Color naranja de espera
-            btn.disabled = true;
+            // Si es nuevo, la imagen es obligatoria. Si es editar, es opcional.
+            if(!productoEditandoId && !filePrincipal) {
+                return alert("⚠️ Debes subir una imagen principal para un producto nuevo.");
+            }
+
+            btn.innerText = "Guardando... ⏳"; btn.style.background = "#f39c12"; btn.disabled = true;
 
             try {
-                // Subir imagen principal
-                const namePrincipal = `${Date.now()}-prin-${filePrincipal.name.replace(/\s+/g, '-')}`;
-                await supabaseClient.storage.from('galeria_muebles').upload(namePrincipal, filePrincipal);
-                const urlPrincipal = supabaseClient.storage.from('galeria_muebles').getPublicUrl(namePrincipal).data.publicUrl;
+                // Creamos un "paquete" con los textos
+                let paqueteDatos = { titulo, identificador, categoria, precio, precio_rebaja, descripcion, acabado, material, medidas };
 
-                // Subir galería
-                let urlsGaleria = [];
-                for(let i = 0; i < filesGaleria.length; i++) {
-                    const fileExtra = filesGaleria[i];
-                    const nameExtra = `${Date.now()}-gal-${fileExtra.name.replace(/\s+/g, '-')}`;
-                    await supabaseClient.storage.from('galeria_muebles').upload(nameExtra, fileExtra);
-                    const urlExtra = supabaseClient.storage.from('galeria_muebles').getPublicUrl(nameExtra).data.publicUrl;
-                    urlsGaleria.push(urlExtra);
+                // 1. Si subió imagen principal nueva, la procesamos
+                if (filePrincipal) {
+                    const name = `${Date.now()}-prin-${filePrincipal.name.replace(/\s+/g, '-')}`;
+                    await supabaseClient.storage.from('galeria_muebles').upload(name, filePrincipal);
+                    paqueteDatos.imagen_url = supabaseClient.storage.from('galeria_muebles').getPublicUrl(name).data.publicUrl;
                 }
 
-                // Guardar en tabla
-                const { error: dbError } = await supabaseClient.from('inventario_muebles').insert([{
-                    titulo, identificador, categoria, precio, descripcion, acabado, material, medidas,
-                    imagen_url: urlPrincipal,
-                    galeria: urlsGaleria
-                }]);
+                // 2. Si subió galería nueva, la procesamos
+                if (filesGaleria.length > 0) {
+                    let urls = [];
+                    for(let i = 0; i < filesGaleria.length; i++) {
+                        const name = `${Date.now()}-gal-${filesGaleria[i].name.replace(/\s+/g, '-')}`;
+                        await supabaseClient.storage.from('galeria_muebles').upload(name, filesGaleria[i]);
+                        urls.push(supabaseClient.storage.from('galeria_muebles').getPublicUrl(name).data.publicUrl);
+                    }
+                    paqueteDatos.galeria = urls;
+                }
 
-                if(dbError) throw dbError;
+                // 3. Decidimos si INSERTAR (Nuevo) o ACTUALIZAR (Editar)
+                let errorDB;
+                if (productoEditandoId) {
+                    const { error } = await supabaseClient.from('inventario_muebles').update(paqueteDatos).eq('id', productoEditandoId);
+                    errorDB = error;
+                } else {
+                    const { error } = await supabaseClient.from('inventario_muebles').insert([paqueteDatos]);
+                    errorDB = error;
+                }
 
-                alert("✅ ¡Producto subido con éxito!");
-                
-                // Limpiar formulario
-                document.querySelectorAll('.form-control').forEach(input => input.value = '');
-                document.getElementById('categoria').value = 'Sillas'; // Reset a Sillas
-                cargarLista();
+                if(errorDB) throw errorDB;
+
+                alert(productoEditandoId ? "✅ ¡Actualizado!" : "✅ ¡Guardado!");
+                cancelarEdicion(); // Limpia el formulario
+                cargarLista(); // Refresca la tabla
 
             } catch (error) {
-                console.error(error);
-                alert("❌ Ocurrió un error al guardar. Revisa tu conexión o las imágenes.");
+                console.error(error); alert("❌ Error al guardar.");
             } finally {
-                // Restaurar botón
-                btn.innerText = "Guardar Producto";
-                btn.style.background = "#27ae60";
+                btn.innerText = productoEditandoId ? "Actualizar Producto" : "Guardar Producto"; 
+                btn.style.background = productoEditandoId ? "#0284c7" : "#27ae60"; 
                 btn.disabled = false;
             }
         }
 
-        // 3. Cargar lista con diseño bonito
+        // --- FUNCIONES DE LA LISTA Y EDICIÓN ---
         async function cargarLista() {
             const div = document.getElementById('lista-productos');
-            div.innerHTML = '<p style="text-align:center; color:#888;">Cargando inventario...</p>';
-
             const { data } = await supabaseClient.from('inventario_muebles').select('*').order('id', { ascending: false });
             div.innerHTML = '';
             
-            if(data.length === 0) {
-                div.innerHTML = '<p style="text-align:center; color:#888;">No hay productos registrados.</p>';
-                return;
-            }
-
             data.forEach(p => {
                 const precioFormat = `$${Number(p.precio).toLocaleString('es-MX')}`;
+                let etiquetaOferta = p.precio_rebaja ? `<span style="color:#e74c3c; font-weight:bold; font-size:12px;">(Oferta: $${p.precio_rebaja})</span>` : '';
+
                 div.innerHTML += `
                 <div class="product-item">
                     <div class="product-info">
-                        <img src="${p.imagen_url}" alt="${p.titulo}">
+                        <img src="${p.imagen_url}">
                         <div class="product-details">
                             <h4>${p.titulo} <span class="badge">${p.categoria}</span></h4>
-                            <p>${precioFormat} | ID: ${p.identificador}</p>
+                            <p>${precioFormat} ${etiquetaOferta}</p>
                         </div>
                     </div>
-                    <button class="btn-delete" onclick="eliminarProducto(${p.id}, '${p.titulo}')">Eliminar</button>
+                    <div>
+                        <button class="btn-edit" onclick="prepararEdicion(${p.id})">Editar</button>
+                        <button class="btn-delete" onclick="eliminarProducto(${p.id}, '${p.titulo}')">X</button>
+                    </div>
                 </div>`;
             });
         }
 
-        // 4. Eliminar
+        async function prepararEdicion(id) {
+            // Buscamos el producto
+            const { data } = await supabaseClient.from('inventario_muebles').select('*').eq('id', id).single();
+            if(!data) return;
+
+            // Rellenamos el formulario
+            document.getElementById('titulo').value = data.titulo;
+            document.getElementById('identificador').value = data.identificador;
+            document.getElementById('categoria').value = data.categoria;
+            document.getElementById('precio').value = data.precio;
+            document.getElementById('precio_rebaja').value = data.precio_rebaja || '';
+            document.getElementById('material').value = data.material || '';
+            document.getElementById('acabado').value = data.acabado || '';
+            document.getElementById('medidas').value = data.medidas || '';
+            document.getElementById('descripcion').value = data.descripcion || '';
+            
+            // Cambiamos al Modo Edición
+            productoEditandoId = id;
+            document.getElementById('titulo-form').innerText = "✏️ Editando: " + data.titulo;
+            
+            const btnG = document.getElementById('btnGuardar');
+            btnG.innerText = "Actualizar Producto";
+            btnG.style.background = "#0284c7"; // Azul para editar
+            
+            document.getElementById('btnCancelar').style.display = "block";
+
+            // Subimos la pantalla hacia el formulario
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicion() {
+            productoEditandoId = null;
+            document.querySelectorAll('.form-control').forEach(input => input.value = '');
+            document.getElementById('categoria').value = 'Sillas';
+            document.getElementById('titulo-form').innerText = "Añadir Nuevo Producto";
+            
+            const btnG = document.getElementById('btnGuardar');
+            btnG.innerText = "Guardar Producto";
+            btnG.style.background = "#27ae60"; // Verde original
+            
+            document.getElementById('btnCancelar').style.display = "none";
+        }
+
         async function eliminarProducto(id, nombre) {
-            if(confirm(`⚠️ ¿Estás seguro que deseas eliminar el producto: "${nombre}"? \nEsta acción no se puede deshacer.`)) {
+            if(confirm(`⚠️ ¿Eliminar "${nombre}"? Esta acción no se deshace.`)) {
                 await supabaseClient.from('inventario_muebles').delete().eq('id', id);
                 cargarLista();
             }

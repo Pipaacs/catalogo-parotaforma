@@ -710,7 +710,6 @@ Medida: ${selectedSize}${variantText}
 // 1. CARGAR CATÁLOGO (SILLAS, COMEDORES, ETC)
 // ==========================================
 async function cargarCatalogoDinamico() {
-    // Definimos qué ID de HTML corresponde a qué categoría en Supabase
     const configuracionPaginas = [
         { id: 'contenedor-sillas', categoria: 'Sillas' },
         { id: 'contenedor-comedores', categoria: 'Comedores' },
@@ -721,33 +720,51 @@ async function cargarCatalogoDinamico() {
         { id: 'contenedor-cabeceras', categoria: 'Cabeceras' }
     ];
 
-    // Buscamos en qué página estamos actualmente
     for (let config of configuracionPaginas) {
         const contenedor = document.getElementById(config.id);
         
-        // Si encontramos el contenedor en el HTML actual, ejecutamos la búsqueda
         if (contenedor) {
-            // Buscamos en Supabase solo la categoría que corresponde
             const { data: muebles, error } = await supabaseClient
                 .from('inventario_muebles')
                 .select('*')
                 .eq('categoria', config.categoria);
 
-            contenedor.innerHTML = ''; // Limpiamos el contenedor
+            contenedor.innerHTML = ''; 
 
             if (muebles && muebles.length > 0) {
-                // Inyectamos cada mueble encontrado
                 muebles.forEach(mueble => {
-                    const precioFormateado = `$${Number(mueble.precio).toLocaleString('es-MX')} MXN`;
+                    
+                    // --- CÁLCULO DE OFERTA PARA LAS TARJETAS ---
+                    let htmlPrecio = `<p class="price">$${Number(mueble.precio).toLocaleString('es-MX')} MXN</p>`;
+                    let htmlBadge = '';
+
+                    // Si existe un precio de rebaja y es menor al precio normal:
+                    if(mueble.precio_rebaja && mueble.precio_rebaja < mueble.precio) {
+                        const descuento = Math.round(((mueble.precio - mueble.precio_rebaja) / mueble.precio) * 100);
+                        
+                        // Etiqueta flotante roja
+                        htmlBadge = `<span style="position:absolute; top:10px; right:10px; background:#e74c3c; color:white; padding:5px 10px; border-radius:4px; font-weight:bold; font-size:12px; z-index:2; box-shadow:0 2px 5px rgba(0,0,0,0.2);">-${descuento}% OFF</span>`;
+                        
+                        // Precios (Tachado en gris y nuevo en rojo)
+                        htmlPrecio = `
+                            <p class="price" style="margin:0;">
+                                <span style="text-decoration:line-through; color:#aaa; font-size:13px; margin-right:5px; font-weight:normal;">$${Number(mueble.precio).toLocaleString('es-MX')}</span>
+                                <span style="color:#e74c3c; font-weight:bold;">$${Number(mueble.precio_rebaja).toLocaleString('es-MX')} MXN</span>
+                            </p>
+                        `;
+                    }
+
+                    // Inyectamos el diseño en la página
                     contenedor.innerHTML += `
-                        <div class="product-card">
+                        <div class="product-card" style="position:relative;">
+                            ${htmlBadge}
                             <a href="producto-detalle.html?id=${mueble.identificador}">
                                 <div class="product-image">
                                     <img src="${mueble.imagen_url}" alt="${mueble.titulo}">
                                 </div>
                                 <div class="product-info">
                                     <h3>${mueble.titulo}</h3>
-                                    <p class="price">${precioFormateado}</p>
+                                    ${htmlPrecio}
                                 </div>
                             </a>
                         </div>
@@ -756,7 +773,7 @@ async function cargarCatalogoDinamico() {
             } else {
                 contenedor.innerHTML = '<p style="text-align:center; width:100%;">Aún no hay productos en esta categoría.</p>';
             }
-            break; // Detenemos la búsqueda porque ya encontramos la página correcta
+            break; 
         }
     }
 }
@@ -872,6 +889,9 @@ setTimeout(() => { // Lo retrasamos 1 milisegundo para que cargue aislado del c�
                 if(searchResults) searchResults.innerHTML = '';
             });
         }
+        // ... (Tu código de abrir y cerrar buscador se queda igual) ...
+        
+        // --- 1B. LÓGICA DE BUSCAR Y DIBUJAR TARJETAS (CON DESCUENTOS) ---
         if(searchInput && searchResults) {
             searchInput.addEventListener('input', async (e) => {
                 const texto = e.target.value.toLowerCase().trim();
@@ -884,14 +904,31 @@ setTimeout(() => { // Lo retrasamos 1 milisegundo para que cargue aislado del c�
                 if(error || !data || data.length === 0) {
                     searchResults.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1;">No hay resultados.</p>'; return;
                 }
+                
                 data.forEach(m => {
+                    // CÁLCULO DE DESCUENTO PARA TARJETA
+                    let htmlPrecio = `<p style="margin:0; color:#b58b00; font-weight:bold;">$${Number(m.precio).toLocaleString('es-MX')} MXN</p>`;
+                    let htmlBadge = '';
+
+                    if(m.precio_rebaja && m.precio_rebaja < m.precio) {
+                        const descuento = Math.round(((m.precio - m.precio_rebaja) / m.precio) * 100);
+                        htmlBadge = `<span style="position:absolute; top:10px; right:10px; background:#e74c3c; color:white; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:12px; z-index:2; box-shadow:0 2px 5px rgba(0,0,0,0.2);">-${descuento}%</span>`;
+                        htmlPrecio = `
+                            <p style="margin:0;">
+                                <span style="text-decoration:line-through; color:#aaa; font-size:12px; margin-right:5px;">$${Number(m.precio).toLocaleString('es-MX')}</span>
+                                <span style="color:#e74c3c; font-weight:bold;">$${Number(m.precio_rebaja).toLocaleString('es-MX')} MXN</span>
+                            </p>
+                        `;
+                    }
+
                     searchResults.innerHTML += `
-                        <div class="product-card" style="background:#fff; border-radius:8px; overflow:hidden; border:1px solid #eee;">
+                        <div class="product-card" style="background:#fff; border-radius:8px; overflow:hidden; border:1px solid #eee; position:relative;">
+                            ${htmlBadge}
                             <a href="producto-detalle.html?id=${m.identificador}">
                                 <img src="${m.imagen_url}" style="width:100%; height:180px; object-fit:cover;">
                                 <div style="padding:15px;">
                                     <h4 style="margin:0 0 5px; font-size:15px; color:#333;">${m.titulo}</h4>
-                                    <p style="margin:0; color:#b58b00; font-weight:bold;">$${Number(m.precio).toLocaleString('es-MX')}</p>
+                                    ${htmlPrecio}
                                 </div>
                             </a>
                         </div>`;
@@ -899,7 +936,7 @@ setTimeout(() => { // Lo retrasamos 1 milisegundo para que cargue aislado del c�
             });
         }
 
-        /// --- 2. LÓGICA DEL DISEÑO PREMIUM (DETALLE) ---
+        // --- 2. LÓGICA DEL DISEÑO PREMIUM (DETALLE CON DESCUENTO) ---
         if (window.location.pathname.includes('producto-detalle.html')) {
             const params = new URLSearchParams(window.location.search);
             const idUrl = params.get('id');
@@ -910,14 +947,27 @@ setTimeout(() => { // Lo retrasamos 1 milisegundo para que cargue aislado del c�
 
                 document.getElementById('detalle-titulo').innerText = p.titulo;
                 document.getElementById('detalle-categoria').innerText = p.categoria;
-                document.getElementById('detalle-precio').innerText = `$${Number(p.precio).toLocaleString('es-MX')} MXN`;
                 document.getElementById('detalle-descripcion').innerText = p.descripcion || 'Sin descripción.';
                 document.getElementById('detalle-material').innerText = p.material || 'N/A';
                 document.getElementById('detalle-acabado').innerText = p.acabado || 'N/A';
                 document.getElementById('detalle-medidas').innerText = p.medidas || 'N/A';
                 
+                // CÁLCULO DE DESCUENTO PARA VISTA DETALLE
+                if(p.precio_rebaja && p.precio_rebaja < p.precio) {
+                    const descuento = Math.round(((p.precio - p.precio_rebaja) / p.precio) * 100);
+                    document.getElementById('detalle-precio').innerHTML = `
+                        <span style="text-decoration:line-through; color:#aaa; font-size:18px; margin-right:10px;">$${Number(p.precio).toLocaleString('es-MX')}</span>
+                        <span style="color:#e74c3c; font-weight:bold;">$${Number(p.precio_rebaja).toLocaleString('es-MX')} MXN</span>
+                        <span style="background:#e74c3c; color:white; padding:3px 8px; border-radius:12px; font-size:14px; margin-left:10px; vertical-align:middle; display:inline-block;">-${descuento}% OFF</span>
+                    `;
+                } else {
+                    document.getElementById('detalle-precio').innerText = `$${Number(p.precio).toLocaleString('es-MX')} MXN`;
+                }
+                
                 const imgPrin = document.getElementById('imagen-principal');
                 imgPrin.src = p.imagen_url;
+
+                // (El resto de tu código de la galería y whatsapp se queda exactamente igual) ...
 
                 // === NUEVA LÓGICA DE GALERÍA ORDENADA ===
                 window.galeriaActual = [p.imagen_url]; // Metemos la principal de primero
