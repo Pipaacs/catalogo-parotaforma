@@ -996,11 +996,23 @@ setTimeout(() => { // Lo retrasamos 1 milisegundo para que cargue aislado del c�
                 }
 
                 // Configurar WhatsApp
+
+                let precioParaWhatsapp = p.precio; // Por defecto el normal
+
+            if (p.precio_rebaja && p.precio_rebaja < p.precio) {
+                 precioParaWhatsapp = p.precio_rebaja; // Si hay oferta, usamos la oferta
+                }
+
                 document.getElementById('btn-whatsapp').onclick = () => {
-                    const numero = "524794084824"; // ¡CÁMBIALO AQUÍ!
-                    const msj = `Hola, me interesa: *${p.titulo}*.\nPrecio: $${Number(p.precio).toLocaleString('es-MX')} MXN.\nLink: ${window.location.href}`;
-                    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msj)}`, '_blank');
-                };
+    const numero = "524794084824"; // Tu número real
+    const precioFormateado = Number(precioParaWhatsapp).toLocaleString('es-MX');
+    
+    // El mensaje ahora dirá el precio de oferta si existe
+    const etiquetaOferta = (p.precio_rebaja) ? " (Precio de Oferta 🔥)" : "";
+    const msj = `Hola, me interesa: *${p.titulo}*${etiquetaOferta}.\nPrecio: $${precioFormateado} MXN.\nLink: ${window.location.href}`;
+    
+    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msj)}`, '_blank');
+};
             });
         }
     } catch (e) { console.error("Error protegido en lupa/detalle:", e); }
