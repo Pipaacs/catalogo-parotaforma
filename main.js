@@ -616,34 +616,7 @@ Medida: ${selectedSize}${variantText}
             // =================================================================
             // H. EFECTO LUPA (ZOOM) - REPARADO
             // =================================================================
-            const zoomContainer = document.querySelector('.main-image-container');
-            const zoomImg = document.getElementById('main-product-image');
-
-            if (zoomContainer && zoomImg) {
-                console.log("Sistema de Zoom Activado"); // Esto te avisa en la consola si funciona
-
-                // 1. CUANDO EL MOUSE SE MUEVE SOBRE LA FOTO
-                zoomContainer.addEventListener('mousemove', function(e) {
-                    // Obtener dimensiones exactas
-                    const { left, top, width, height } = zoomContainer.getBoundingClientRect();
-                    
-                    // Calcular posición del mouse en %
-                    const x = ((e.clientX - left) / width) * 100;
-                    const y = ((e.clientY - top) / height) * 100;
-
-                    // Aplicar efecto
-                    zoomImg.style.transformOrigin = `${x}% ${y}%`;
-                    zoomImg.style.transform = "scale(1.8)"; // Escala de Zoom (1.8x)
-                });
-
-                // 2. CUANDO EL MOUSE SALE DE LA FOTO
-                zoomContainer.addEventListener('mouseleave', function() {
-                    zoomImg.style.transformOrigin = "center center";
-                    zoomImg.style.transform = "scale(1)"; // Vuelve a tamaño normal
-                });
-            } else {
-                console.log("Error: No encontré el contenedor del zoom (.main-image-container)");
-            }
+           
 
             // F. PRODUCTOS RELACIONADOS (Cross-Selling)
             // =================================================================
@@ -727,66 +700,11 @@ Medida: ${selectedSize}${variantText}
         });
     }
 
-    // Carrito (Contador Visual)
 
-    // SISTEMA DE BÚSQUEDA
-    const searchBtn = document.getElementById('search-btn');
-    const searchPanel = document.getElementById('search-panel');
-    const closeSearch = document.getElementById('close-search');
-    const searchInput = document.getElementById('search-input');
-    const resultsContainer = document.getElementById('search-results-container');
-
-    if (searchBtn) {
-        searchBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            searchPanel.classList.add('active');
-            setTimeout(() => searchInput.focus(), 100);
-        });
-    }
-
-    if (closeSearch) {
-        closeSearch.addEventListener('click', () => {
-            searchPanel.classList.remove('active');
-        });
-    }
-
-    if (searchInput) {
-        searchInput.addEventListener('keyup', (e) => {
-            const text = e.target.value.toLowerCase();
-            resultsContainer.innerHTML = ''; 
-
-            if (text.length < 2) return;
-
-            for (const id in productsDB) {
-                const product = productsDB[id];
-                const title = product.title.toLowerCase();
-                const desc = product.desc.toLowerCase();
-                
-                // Busca en Título O Descripción
-                if (title.includes(text) || desc.includes(text)) {
-                    
-                    const resultCard = document.createElement('div');
-                    resultCard.classList.add('search-item');
-                    const imgUrl = (product.images && product.images.length > 0) ? product.images[0] : 'https://via.placeholder.com/150';
-
-                    resultCard.innerHTML = `
-                        <a href="producto-detalle.html?id=${id}">
-                            <img src="${imgUrl}" alt="${product.title}">
-                            <h4>${product.title}</h4>
-                            <p>${product.price}</p>
-                        </a>
-                    `;
-                    resultsContainer.appendChild(resultCard);
-                }
-            }
-
-            if (resultsContainer.innerHTML === '') {
-                resultsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999;">No encontramos coincidencias.</p>';
-            }
-        });
-    }
-
+    // Función que busca en tu nueva base de datos mientras escribes
+    
 });
+
 
 // ==========================================
 // 1. CARGAR CATÁLOGO (SILLAS, COMEDORES, ETC)
@@ -883,7 +801,29 @@ async function cargarDetalleProducto() {
             });
         }
     }
-}
+    // ... [Aquí termina el código que carga la galería de fotos] ...
+
+    // === NUEVO: CONFIGURAR BOTÓN DE WHATSAPP ===
+    const btnWhatsapp = document.getElementById('btn-whatsapp');
+    if (btnWhatsapp) {
+        btnWhatsapp.onclick = () => {
+            // ⚠️ IMPORTANTE: Cambia este número por el de tu vendedor.
+            // Debe llevar el código de país (52 para México) sin el signo +.
+            const numeroVentas = "5214794084824"; 
+            
+            // Capturamos el enlace donde está el cliente actualmente
+            const enlaceMueble = window.location.href; 
+            
+            // Redactamos el mensaje automático
+            const mensaje = `Hola, me interesa este mueble: *${producto.titulo}*.\nPrecio marcado: $${Number(producto.precio).toLocaleString('es-MX')} MXN.\n\nAquí está el enlace: ${enlaceMueble}`;
+            
+            // Creamos el enlace oficial de WhatsApp y lo abrimos en otra pestaña
+            const whatsappUrl = `https://wa.me/${numeroVentas}?text=${encodeURIComponent(mensaje)}`;
+            window.open(whatsappUrl, '_blank');
+        };
+    }
+} // <-- Esta es la llave que cierra la función cargarDetalleProducto()
+
 
 function cambiarImagenPrincipal(nuevaUrl) {
     document.getElementById('imagen-principal').src = nuevaUrl;
@@ -900,4 +840,165 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('producto-detalle.html')) {
         cargarDetalleProducto();
     }
+});
+
+// ==========================================
+// NUEVO BUSCADOR CONECTADO A SUPABASE
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+   // ==========================================
+// NUEVO BUSCADOR Y DETALLE A PRUEBA DE FALLOS
+// ==========================================
+setTimeout(() => { // Lo retrasamos 1 milisegundo para que cargue aislado del código viejo
+    try {
+        // --- 1. LÓGICA DE LA LUPA ---
+        const searchBtn = document.getElementById('search-btn');
+        const searchPanel = document.getElementById('search-panel');
+        const closeSearch = document.getElementById('close-search');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results-container');
+
+        if(searchBtn && searchPanel) {
+            searchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                searchPanel.classList.add('active');
+                if(searchInput) setTimeout(() => searchInput.focus(), 300);
+            });
+        }
+        if(closeSearch && searchPanel) {
+            closeSearch.addEventListener('click', () => {
+                searchPanel.classList.remove('active');
+                if(searchInput) searchInput.value = '';
+                if(searchResults) searchResults.innerHTML = '';
+            });
+        }
+        if(searchInput && searchResults) {
+            searchInput.addEventListener('input', async (e) => {
+                const texto = e.target.value.toLowerCase().trim();
+                if(texto.length < 2) { searchResults.innerHTML = ''; return; }
+                
+                searchResults.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1;">Buscando...</p>';
+                
+                const { data, error } = await supabaseClient.from('inventario_muebles').select('*').ilike('titulo', `%${texto}%`);
+                searchResults.innerHTML = '';
+                if(error || !data || data.length === 0) {
+                    searchResults.innerHTML = '<p style="text-align:center; width:100%; grid-column: 1/-1;">No hay resultados.</p>'; return;
+                }
+                data.forEach(m => {
+                    searchResults.innerHTML += `
+                        <div class="product-card" style="background:#fff; border-radius:8px; overflow:hidden; border:1px solid #eee;">
+                            <a href="producto-detalle.html?id=${m.identificador}">
+                                <img src="${m.imagen_url}" style="width:100%; height:180px; object-fit:cover;">
+                                <div style="padding:15px;">
+                                    <h4 style="margin:0 0 5px; font-size:15px; color:#333;">${m.titulo}</h4>
+                                    <p style="margin:0; color:#b58b00; font-weight:bold;">$${Number(m.precio).toLocaleString('es-MX')}</p>
+                                </div>
+                            </a>
+                        </div>`;
+                });
+            });
+        }
+
+        /// --- 2. LÓGICA DEL DISEÑO PREMIUM (DETALLE) ---
+        if (window.location.pathname.includes('producto-detalle.html')) {
+            const params = new URLSearchParams(window.location.search);
+            const idUrl = params.get('id');
+            if(!idUrl) return;
+
+            supabaseClient.from('inventario_muebles').select('*').eq('identificador', idUrl).single().then(({data: p, error}) => {
+                if(error || !p) { document.getElementById('detalle-titulo').innerText = "Producto no encontrado."; return; }
+
+                document.getElementById('detalle-titulo').innerText = p.titulo;
+                document.getElementById('detalle-categoria').innerText = p.categoria;
+                document.getElementById('detalle-precio').innerText = `$${Number(p.precio).toLocaleString('es-MX')} MXN`;
+                document.getElementById('detalle-descripcion').innerText = p.descripcion || 'Sin descripción.';
+                document.getElementById('detalle-material').innerText = p.material || 'N/A';
+                document.getElementById('detalle-acabado').innerText = p.acabado || 'N/A';
+                document.getElementById('detalle-medidas').innerText = p.medidas || 'N/A';
+                
+                const imgPrin = document.getElementById('imagen-principal');
+                imgPrin.src = p.imagen_url;
+
+                // === NUEVA LÓGICA DE GALERÍA ORDENADA ===
+                window.galeriaActual = [p.imagen_url]; // Metemos la principal de primero
+                if(p.galeria && p.galeria.length > 0) {
+                    window.galeriaActual = window.galeriaActual.concat(p.galeria); // Sumamos el resto
+                }
+                window.indiceFoto = 0; // Empezamos en la foto 0
+
+                // Si hay más de 1 foto, mostramos las flechas
+                if(window.galeriaActual.length > 1) {
+                    document.getElementById('btn-prev').style.display = 'flex';
+                    document.getElementById('btn-next').style.display = 'flex';
+                }
+
+                // Generar miniaturas sabiendo su número de índice
+                const galeria = document.getElementById('contenedor-galeria');
+                galeria.innerHTML = `<img src="${p.imagen_url}" class="thumb-activa" onclick="cambiarFoto(this, '${p.imagen_url}', 0)">`;
+                
+                if(p.galeria) {
+                    p.galeria.forEach((url, index) => {
+                        galeria.innerHTML += `<img src="${url}" onclick="cambiarFoto(this, '${url}', ${index + 1})">`;
+                    });
+                }
+
+                // Configurar WhatsApp
+                document.getElementById('btn-whatsapp').onclick = () => {
+                    const numero = "523121234567"; // ¡CÁMBIALO AQUÍ!
+                    const msj = `Hola, me interesa: *${p.titulo}*.\nPrecio: $${Number(p.precio).toLocaleString('es-MX')} MXN.\nLink: ${window.location.href}`;
+                    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msj)}`, '_blank');
+                };
+            });
+        }
+    } catch (e) { console.error("Error protegido en lupa/detalle:", e); }
+}, 1);
+
+// ==========================================
+// FUNCIONES GLOBALES DE FOTOS Y FLECHAS
+// ==========================================
+
+// Función cuando tocas una miniatura
+window.cambiarFoto = function(elemento, srcNueva, index) {
+    window.indiceFoto = index; // Guardamos el número de foto que tocaste
+    
+    document.getElementById('imagen-principal').style.opacity = '0.7';
+    setTimeout(() => {
+        document.getElementById('imagen-principal').src = srcNueva;
+        document.getElementById('imagen-principal').style.opacity = '1';
+    }, 150);
+    
+    document.querySelectorAll('.premium-gallery img').forEach(i => i.classList.remove('thumb-activa'));
+    elemento.classList.add('thumb-activa');
+};
+
+// Función de las flechas
+window.moverGaleria = function(direccion) {
+    if(!window.galeriaActual || window.galeriaActual.length <= 1) return;
+
+    window.indiceFoto += direccion;
+    
+    // Ciclo infinito: Si llegas al final, vuelve al principio y viceversa
+    if(window.indiceFoto >= window.galeriaActual.length) window.indiceFoto = 0;
+    if(window.indiceFoto < 0) window.indiceFoto = window.galeriaActual.length - 1;
+
+    const srcNueva = window.galeriaActual[window.indiceFoto];
+    
+    // Cambiar la foto grande
+    document.getElementById('imagen-principal').style.opacity = '0.7';
+    setTimeout(() => {
+        document.getElementById('imagen-principal').src = srcNueva;
+        document.getElementById('imagen-principal').style.opacity = '1';
+    }, 150);
+
+    // Mover el bordecito dorado de la miniatura seleccionada
+    const thumbs = document.querySelectorAll('.premium-gallery img');
+    thumbs.forEach(i => i.classList.remove('thumb-activa'));
+    if(thumbs[window.indiceFoto]) {
+        thumbs[window.indiceFoto].classList.add('thumb-activa');
+        // Para celulares: hacer que la miniatura se auto-deslice si se sale de la pantalla
+        thumbs[window.indiceFoto].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+};
+
+
 });

@@ -445,3 +445,167 @@ h1, h2, h3, h4 { font-weight: 500; letter-spacing: 0.5px; }
     background-color: #f7e600;
     color: #000;
 }
+
+/* Botón para regresar */
+.btn-regresar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 20px;
+    transition: color 0.3s, transform 0.2s;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+}
+
+.btn-regresar:hover {
+    color: #b58b00; /* Tu color dorado */
+    transform: translateX(-5px); /* Se mueve un poquito a la izquierda al pasar el mouse */
+}
+
+
+/* ========================================================
+   NUEVO DISEÑO PREMIUM PRODUCTO-DETALLE
+   ======================================================== */
+.product-premium-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 5%;
+    display: flex;
+    gap: 60px;
+    align-items: flex-start;
+}
+.product-premium-left { flex: 1.2; }
+.product-premium-right {
+    flex: 1;
+    position: sticky; /* Hace que el lado derecho te persiga al bajar */
+    top: 100px; 
+}
+.main-image-wrapper {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    background: #f9f8f4;
+}
+.main-image-wrapper img {
+    width: 100%;
+    height: auto; /* Deja que la imagen tome su forma natural */
+    max-height: 600px; /* Límite para que no se haga enorme en pantallas gigantes */
+    object-fit: contain; /* EL SECRETO: Fuerza a que se muestre el 100% de la foto siempre */
+    display: block;
+    transition: opacity 0.3s;
+    border-radius: 12px;
+    background-color: #f9f8f4; /* Mantiene un fondo elegante por si sobra espacio a los lados */
+}
+.premium-gallery {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+.premium-gallery img {
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+    opacity: 0.6;
+}
+.premium-gallery img:hover, .premium-gallery img.thumb-activa {
+    opacity: 1;
+    border-color: #b58b00; /* Tu color dorado */
+}
+#detalle-titulo { font-size: 32px; font-weight: 600; margin-top: 10px; color: #222; }
+.premium-price { font-size: 26px; color: #b58b00; font-weight: 600; margin: 10px 0 25px 0; }
+.premium-description { font-size: 16px; color: #555; line-height: 1.8; margin-bottom: 30px; }
+.badge { background: #eee; color: #555; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
+.premium-specs {
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 30px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.spec-item { display: flex; align-items: center; gap: 15px; }
+.spec-item .icon { font-size: 24px; }
+.spec-label { display: block; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+.spec-value { display: block; font-size: 15px; color: #222; font-weight: 500; }
+.btn-whatsapp-premium {
+    width: 100%;
+    background: #25D366;
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
+}
+.btn-whatsapp-premium:hover {
+    background: #1ebc5a;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+}
+@media (max-width: 900px) {
+    .product-premium-container { flex-direction: column; gap: 40px; }
+    .product-premium-right { position: relative; top: 0; }
+}
+
+/* ========================================================
+   FLECHAS DEL SLIDER (GALERÍA)
+   ======================================================== */
+.slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    color: #333;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.slider-arrow:hover {
+    background: #b58b00; /* Tu color dorado */
+    color: white;
+    transform: translateY(-50%) scale(1.1); /* Crece un poquito */
+}
+
+.prev-arrow { left: 15px; }
+.next-arrow { right: 15px; }
+
+/* Ocultar flechas en móviles pequeños para no tapar la foto (opcional) */
+@media (max-width: 600px) {
+    .slider-arrow { width: 35px; height: 35px; font-size: 16px; }
+    .prev-arrow { left: 10px; }
+    .next-arrow { right: 10px; }
+}
