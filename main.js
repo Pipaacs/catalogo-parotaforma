@@ -584,7 +584,7 @@ if (mlBtn) {
 
                 // 3. ACTUALIZAR ENLACE DE WHATSAPP
                 if (waBtn) {
-                    const myNumber = "+524794084824"; // <--- ¡PON TU NÚMERO!
+                    const myNumber = "524794084824"; // <--- ¡PON TU NÚMERO!
                     
                     let variantText = "";
                     if (product.variants && selectedVariant) {
@@ -945,6 +945,9 @@ setTimeout(() => { // Lo retrasamos 1 milisegundo para que cargue aislado del c�
             supabaseClient.from('inventario_muebles').select('*').eq('identificador', idUrl).single().then(({data: p, error}) => {
                 if(error || !p) { document.getElementById('detalle-titulo').innerText = "Producto no encontrado."; return; }
 
+                console.log("Llamando a relacionados para:", p.categoria);
+                cargarRelacionados(p.categoria, p.id);
+
                 document.getElementById('detalle-titulo').innerText = p.titulo;
                 document.getElementById('detalle-categoria').innerText = p.categoria;
                 document.getElementById('detalle-descripcion').innerText = p.descripcion || 'Sin descripción.';
@@ -994,7 +997,7 @@ setTimeout(() => { // Lo retrasamos 1 milisegundo para que cargue aislado del c�
 
                 // Configurar WhatsApp
                 document.getElementById('btn-whatsapp').onclick = () => {
-                    const numero = "523121234567"; // ¡CÁMBIALO AQUÍ!
+                    const numero = "524794084824"; // ¡CÁMBIALO AQUÍ!
                     const msj = `Hola, me interesa: *${p.titulo}*.\nPrecio: $${Number(p.precio).toLocaleString('es-MX')} MXN.\nLink: ${window.location.href}`;
                     window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msj)}`, '_blank');
                 };
@@ -1002,6 +1005,61 @@ setTimeout(() => { // Lo retrasamos 1 milisegundo para que cargue aislado del c�
         }
     } catch (e) { console.error("Error protegido en lupa/detalle:", e); }
 }, 1);
+
+
+// FUNCIÓN PARA BUSCAR OTROS MUEBLES DE LA MISMA CATEGORÍA
+async function cargarRelacionados(categoria, idActual) {
+    const contenedor = document.getElementById('contenedor-relacionados');
+    if(!contenedor) return;
+    contenedor.innerHTML = '';
+
+    const { data: recomendados, error } = await supabaseClient
+        .from('inventario_muebles')
+        .select('*')
+        .eq('categoria', categoria)
+        .neq('id', idActual)
+        .limit(3);
+
+    if (recomendados && recomendados.length > 0) {
+        recomendados.forEach(m => {
+            let precioHTML = `<p class="price" style="margin:0; font-size:14px; color:#333;">$${Number(m.precio).toLocaleString('es-MX')} MXN</p>`;
+            let badgeHTML = '';
+
+            if(m.precio_rebaja && m.precio_rebaja < m.precio) {
+                const descuento = Math.round(((m.precio - m.precio_rebaja) / m.precio) * 100);
+                badgeHTML = `<span style="position:absolute; top:12px; left:12px; background:#e74c3c; color:white; padding:4px 10px; border-radius:4px; font-weight:bold; font-size:11px; z-index:2;">-${descuento}% OFF</span>`;
+                precioHTML = `
+                    <p class="price" style="margin:0; font-size:14px;">
+                        <span style="text-decoration:line-through; color:#aaa; margin-right:5px;">$${Number(m.precio).toLocaleString('es-MX')}</span>
+                        <span style="color:#e74c3c; font-weight:bold;">$${Number(m.precio_rebaja).toLocaleString('es-MX')}</span>
+                    </p>
+                `;
+            }
+
+            // === CAMBIO CLAVE: Altura de 320px y object-fit: cover ===
+            contenedor.innerHTML += `
+                <div class="product-card" style="position:relative; background:#fff; border-radius:12px; overflow:hidden; transition: transform 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    ${badgeHTML}
+                    <a href="producto-detalle.html?id=${m.identificador}" style="text-decoration: none; color: inherit;">
+                        <div style="width:100%; height:320px; overflow:hidden; background:#f9f8f4;">
+                            <img src="${m.imagen_url}" alt="${m.titulo}" 
+                                 style="width:100%; height:100%; object-fit:cover; object-position:center; transition: transform 0.5s ease;"
+                                 onmouseover="this.style.transform='scale(1.05)'" 
+                                 onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        <div style="padding:20px; text-align:center;">
+                            <h3 style="font-size:16px; margin: 0 0 10px 0; font-weight: 500; color:#222;">${m.titulo}</h3>
+                            ${precioHTML}
+                        </div>
+                    </a>
+                </div>`;
+        });
+    } else {
+        const seccion = document.querySelector('.relacionados-section');
+        if(seccion) seccion.style.display = 'none';
+    }
+}
+
 
 // ==========================================
 // FUNCIONES GLOBALES DE FOTOS Y FLECHAS
