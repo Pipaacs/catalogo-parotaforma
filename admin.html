@@ -35,6 +35,28 @@
         .btn-delete { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
         .btn-edit { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; margin-right: 5px; }
         @media (max-width: 900px) { .dashboard-container { grid-template-columns: 1fr; } .form-grid { grid-template-columns: 1fr; } }
+
+        .tab-btn {
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s;
+    color: #666;
+}
+
+.tab-btn:hover {
+    background: #f3f4f6;
+}
+
+.tab-btn.active {
+    background: #2c3e50; /* Color oscuro profesional */
+    color: white;
+    border-color: #2c3e50;
+}
     </style>
 </head>
 <body>
@@ -67,7 +89,7 @@
                         <option value="Comedores">Comedores</option>
                         <option value="Credenzas">Credenzas</option>
                         <option value="Escritorios">Escritorios</option>
-                        <option value="Muebles TV">Muebles TV</option>
+                        <option value="MueblesTV">Muebles TV</option>
                         <option value="Cantinas">Cantinas</option>
                         <option value="Cabeceras">Cabeceras</option>
                     </select>
@@ -115,20 +137,36 @@
 
         <div class="card">
             <h2>Inventario Actual</h2>
+            <div class="tabs-admin" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+            <button class="tab-btn active" onclick="filtrarInventario('Todos')">Todos</button>
+            <button class="tab-btn" onclick="filtrarInventario('Sillas')">Sillas</button>
+            <button class="tab-btn" onclick="filtrarInventario('Comedores')">Comedores</button>
+            <button class="tab-btn" onclick="filtrarInventario('Credenzas')">Credenzas</button>
+            <button class="tab-btn" onclick="filtrarInventario('Escritorios')">Escritorios</button>
+            <button class="tab-btn" onclick="filtrarInventario('MueblesTV')">MueblesTV</button>
+            <button class="tab-btn" onclick="filtrarInventario('Cantinas')">Cantinas</button>
+            <button class="tab-btn" onclick="filtrarInventario('Cabeceras')">Cabeceras</button>
+            <button class="tab-btn" onclick="filtrarInventario('Otros')">Otros</button>
+            </div>
+            
             <div id="lista-productos"></div>
         </div>
+
+        
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script>
-        let productoEditandoId = null; // Variable mágica para saber si estamos editando o creando
+        let productoEditandoId = null; 
+        let productosMemoria = []; // Variable mágica para las pestañas
 
+        // --- 1. AUTENTICACIÓN ---
         async function checkSesion() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             if (!user) window.location.href = "login.html";
-            else cargarLista();
+            else cargarLista(); // Aquí arranca el inventario al entrar
         }
         checkSesion();
 
@@ -137,7 +175,9 @@
             window.location.href = "login.html";
         }
 
+        // --- 2. GUARDAR / EDITAR PRODUCTO ---
         async function guardarProducto() {
+            // (Todo el código de guardar que ya tenías, no cambia)
             const btn = document.getElementById('btnGuardar');
             const titulo = document.getElementById('titulo').value;
             const identificador = document.getElementById('identificador').value;
@@ -152,29 +192,20 @@
             const filePrincipal = document.getElementById('imagen').files[0];
             const filesGaleria = document.getElementById('galeria').files;
 
-            if(!titulo || !identificador || !precio) {
-                return alert("⚠️ Faltan datos obligatorios (Título, Identificador o Precio).");
-            }
-
-            // Si es nuevo, la imagen es obligatoria. Si es editar, es opcional.
-            if(!productoEditandoId && !filePrincipal) {
-                return alert("⚠️ Debes subir una imagen principal para un producto nuevo.");
-            }
+            if(!titulo || !identificador || !precio) return alert("⚠️ Faltan datos obligatorios.");
+            if(!productoEditandoId && !filePrincipal) return alert("⚠️ Debes subir una imagen principal.");
 
             btn.innerText = "Guardando... ⏳"; btn.style.background = "#f39c12"; btn.disabled = true;
 
             try {
-                // Creamos un "paquete" con los textos
                 let paqueteDatos = { titulo, identificador, categoria, precio, precio_rebaja, descripcion, acabado, material, medidas };
 
-                // 1. Si subió imagen principal nueva, la procesamos
                 if (filePrincipal) {
                     const name = `${Date.now()}-prin-${filePrincipal.name.replace(/\s+/g, '-')}`;
                     await supabaseClient.storage.from('galeria_muebles').upload(name, filePrincipal);
                     paqueteDatos.imagen_url = supabaseClient.storage.from('galeria_muebles').getPublicUrl(name).data.publicUrl;
                 }
 
-                // 2. Si subió galería nueva, la procesamos
                 if (filesGaleria.length > 0) {
                     let urls = [];
                     for(let i = 0; i < filesGaleria.length; i++) {
@@ -185,7 +216,6 @@
                     paqueteDatos.galeria = urls;
                 }
 
-                // 3. Decidimos si INSERTAR (Nuevo) o ACTUALIZAR (Editar)
                 let errorDB;
                 if (productoEditandoId) {
                     const { error } = await supabaseClient.from('inventario_muebles').update(paqueteDatos).eq('id', productoEditandoId);
@@ -198,25 +228,57 @@
                 if(errorDB) throw errorDB;
 
                 alert(productoEditandoId ? "✅ ¡Actualizado!" : "✅ ¡Guardado!");
-                cancelarEdicion(); // Limpia el formulario
-                cargarLista(); // Refresca la tabla
+                cancelarEdicion(); 
+                cargarLista(); // Refresca la lista y la memoria
 
             } catch (error) {
                 console.error(error); alert("❌ Error al guardar.");
             } finally {
-                btn.innerText = productoEditandoId ? "Actualizar Producto" : "Guardar Producto"; 
-                btn.style.background = productoEditandoId ? "#0284c7" : "#27ae60"; 
-                btn.disabled = false;
+                btn.innerText = "Guardar Producto"; btn.style.background = "#27ae60"; btn.disabled = false;
             }
         }
 
-        // --- FUNCIONES DE LA LISTA Y EDICIÓN ---
+        // --- 3. NUEVO SISTEMA DE INVENTARIO CON PESTAÑAS ---
         async function cargarLista() {
             const div = document.getElementById('lista-productos');
-            const { data } = await supabaseClient.from('inventario_muebles').select('*').order('id', { ascending: false });
-            div.innerHTML = '';
+            div.innerHTML = '<p style="padding: 20px;">Cargando inventario...</p>';
             
-            data.forEach(p => {
+            const { data, error } = await supabaseClient.from('inventario_muebles').select('*').order('id', { ascending: false });
+            if (error) { console.error(error); return; }
+
+            productosMemoria = data; // Guardamos en la memoria RAM del navegador
+            
+            // Buscar si hay una pestaña activa, si no, usar 'Todos'
+            const tabActiva = document.querySelector('.tab-btn.active');
+            const categoriaActual = tabActiva ? tabActiva.innerText : 'Todos';
+            
+            renderizarLista(categoriaActual);
+        }
+
+        function filtrarInventario(categoria) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText === categoria) btn.classList.add('active');
+            });
+            renderizarLista(categoria);
+        }
+
+        function renderizarLista(categoriaFiltro) {
+            const div = document.getElementById('lista-productos');
+            div.innerHTML = '';
+
+            const filtrados = (categoriaFiltro === 'Todos') 
+                ? productosMemoria 
+                : (categoriaFiltro === 'Otros')
+                    ? productosMemoria.filter(p => !['Sillas', 'Comedores', 'Escritorios', 'MueblesTV', 'Cantinas', 'Cabeceras'].includes(p.categoria))
+                    : productosMemoria.filter(p => p.categoria === categoriaFiltro);
+
+            if (filtrados.length === 0) {
+                div.innerHTML = `<p style="color:#aaa; text-align:center; padding:20px;">No hay muebles en esta categoría.</p>`;
+                return;
+            }
+
+            filtrados.forEach(p => {
                 const precioFormat = `$${Number(p.precio).toLocaleString('es-MX')}`;
                 let etiquetaOferta = p.precio_rebaja ? `<span style="color:#e74c3c; font-weight:bold; font-size:12px;">(Oferta: $${p.precio_rebaja})</span>` : '';
 
@@ -237,12 +299,11 @@
             });
         }
 
+        // --- 4. PREPARAR EDICIÓN Y ELIMINAR ---
         async function prepararEdicion(id) {
-            // Buscamos el producto
             const { data } = await supabaseClient.from('inventario_muebles').select('*').eq('id', id).single();
             if(!data) return;
 
-            // Rellenamos el formulario
             document.getElementById('titulo').value = data.titulo;
             document.getElementById('identificador').value = data.identificador;
             document.getElementById('categoria').value = data.categoria;
@@ -253,17 +314,12 @@
             document.getElementById('medidas').value = data.medidas || '';
             document.getElementById('descripcion').value = data.descripcion || '';
             
-            // Cambiamos al Modo Edición
             productoEditandoId = id;
             document.getElementById('titulo-form').innerText = "✏️ Editando: " + data.titulo;
-            
             const btnG = document.getElementById('btnGuardar');
             btnG.innerText = "Actualizar Producto";
-            btnG.style.background = "#0284c7"; // Azul para editar
-            
+            btnG.style.background = "#0284c7"; 
             document.getElementById('btnCancelar').style.display = "block";
-
-            // Subimos la pantalla hacia el formulario
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -275,15 +331,14 @@
             
             const btnG = document.getElementById('btnGuardar');
             btnG.innerText = "Guardar Producto";
-            btnG.style.background = "#27ae60"; // Verde original
-            
+            btnG.style.background = "#27ae60"; 
             document.getElementById('btnCancelar').style.display = "none";
         }
 
         async function eliminarProducto(id, nombre) {
             if(confirm(`⚠️ ¿Eliminar "${nombre}"? Esta acción no se deshace.`)) {
                 await supabaseClient.from('inventario_muebles').delete().eq('id', id);
-                cargarLista();
+                cargarLista(); // Refresca todo después de borrar
             }
         }
     </script>
