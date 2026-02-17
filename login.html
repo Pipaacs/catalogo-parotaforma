@@ -1,120 +1,137 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Acceso Administrador | Parota&Forma</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌲%3C/text%3E%3C/svg%3E">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌲%3C/text%3E%3C/svg%3E"
+    />
     <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #f4f5f7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-        }
-        .login-card h2 {
-            color: #2c3e50;
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-weight: 600;
-        }
-        .input-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #555;
-            font-weight: 600;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-family: inherit;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: #b58b00; /* Tu color dorado/madera */
-        }
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: #2c3e50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
-        }
-        .btn-login:hover { background: #1a252f; }
-        .btn-login:active { transform: scale(0.98); }
-        #error-msg {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 15px;
-            font-weight: 600;
-        }
+      body {
+        font-family: "Montserrat", sans-serif;
+        background-color: #f4f5f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .login-card {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 380px;
+        text-align: center;
+      }
+      .login-card h2 {
+        color: #2c3e50;
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-weight: 600;
+      }
+      .input-group {
+        text-align: left;
+        margin-bottom: 20px;
+      }
+      .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #555;
+        font-weight: 600;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-family: inherit;
+        box-sizing: border-box;
+        transition: border-color 0.3s;
+      }
+      .input-group input:focus {
+        outline: none;
+        border-color: #b58b00; /* Tu color dorado/madera */
+      }
+      .btn-login {
+        width: 100%;
+        padding: 14px;
+        background: #2c3e50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background 0.3s,
+          transform 0.1s;
+      }
+      .btn-login:hover {
+        background: #1a252f;
+      }
+      .btn-login:active {
+        transform: scale(0.98);
+      }
+      #error-msg {
+        color: #e74c3c;
+        font-size: 14px;
+        margin-top: 15px;
+        font-weight: 600;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="login-card">
-        <h2>Gestión de Catálogo</h2>
-        
-        <div class="input-group">
-            <label for="email">Correo electrónico</label>
-            <input type="email" id="email" placeholder="ejemplo@parotaforma.com">
-        </div>
-        
-        <div class="input-group">
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" placeholder="••••••••">
-        </div>
+      <h2>Gestión de Catálogo</h2>
 
-        <button class="btn-login" onclick="iniciarSesion()">Ingresar al Panel</button>
-        <p id="error-msg"></p>
+      <div class="input-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" placeholder="ejemplo@parotaforma.com" />
+      </div>
+
+      <div class="input-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="••••••••" />
+      </div>
+
+      <button class="btn-login" onclick="iniciarSesion()">
+        Ingresar al Panel
+      </button>
+      <p id="error-msg"></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
     <script>
-        async function iniciarSesion() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const btn = document.querySelector('.btn-login');
-            
-            btn.innerText = "Verificando..."; // Feedback visual
-            
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      async function iniciarSesion() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const btn = document.querySelector(".btn-login");
 
-            if (error) {
-                document.getElementById('error-msg').innerText = "Credenciales incorrectas. Intenta de nuevo.";
-                btn.innerText = "Ingresar al Panel";
-            } else {
-                window.location.href = "admin.html";
-            }
+        btn.innerText = "Verificando..."; // Feedback visual
+
+        const { error } = await supabaseClient.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          document.getElementById("error-msg").innerText =
+            "Credenciales incorrectas. Intenta de nuevo.";
+          btn.innerText = "Ingresar al Panel";
+        } else {
+          window.location.href = "admin.html";
         }
+      }
     </script>
-</body>
+  </body>
 </html>
