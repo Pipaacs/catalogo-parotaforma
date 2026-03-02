@@ -21,6 +21,7 @@ async function cargarCatalogoDinamico() {
     { id: "contenedor-muebles-tv", categoria: "Muebles TV" },
     { id: "contenedor-cantinas", categoria: "Cantinas" },
     { id: "contenedor-cabeceras", categoria: "Cabeceras" },
+    { id: "contenedor-mesas-centro", categoria: "Mesas de Centro" },
   ];
 
   for (let config of configuracionPaginas) {
